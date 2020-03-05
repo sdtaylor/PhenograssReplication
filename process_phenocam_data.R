@@ -52,7 +52,7 @@ read_in_phenocam_file = function(full_file_path){
   
   read_csv(full_file_path, skip=24) %>%
     select(date, year, doy, gcc_90, smooth_gcc_90, snow_flag, outlierflag_gcc_90) %>%
-    mutate(phenocam_name, roitype = phenocam_veg, roi = phenocam_roi)
+    mutate(phenocam_name = phenocam_name, roitype = phenocam_veg, roi = phenocam_roi)
 }
 
 phenocam_files = list.files('data/phenocam/', pattern = '_3day.csv', full.names = T)
