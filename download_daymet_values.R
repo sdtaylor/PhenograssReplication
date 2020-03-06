@@ -3,6 +3,12 @@ library(tidyverse)
 
 phenocam_sites = read_csv('site_list.csv')
 
+# only need to get data for each tower, not
+# for every roi veg type
+phenocam_sites = phenocam_sites %>%
+  select(phenocam_name, lat,lon) %>%
+  distinct()
+
 get_daymet_data = function(lon,lat,phenocam_name){
   print(phenocam_name)
   download_output = daymetr::download_daymet(lat = lat, lon = lon,
