@@ -10,7 +10,8 @@ timeseries_to_drop = tribble(
   ~phenocam_name, ~roitype, ~roi,
   'bouldinalfalfa','AG', '1000', # lots of camera shifts here as noted on the phenocam site
   'cucamongasouth','SH', '1000', # lots of missing data in this one
-  #'ahwahnee',      ''  # has three GR timeseries, 1000,2000,3000, maybe ok?
+  'ahwahnee',      'GR', '1000',  # ahwahnee, has three GR timeseries, 3000 is the most recent
+  'ahwahnee',      'GR', '2000',
   'goodwater',    'AG',  '1000',  # keeping AG_1001 since it excludes the field edge
   'hawbeckereddy','AG',  '2000',  #  AG_2000 roi is < 1 year, but AG_1000 for here is good
   'ibp',          'SH',  '1000',  # replicated by SH_1001
