@@ -7,7 +7,7 @@ library(tidyverse)
 # so most cameras still have another ROI being included
 
 timeseries_to_drop = tribble(
-  ~phenocam_name, ~roitype, ~roi,
+  ~phenocam_name, ~roi_type, ~roi_id,
   'bouldinalfalfa','AG', '1000', # lots of camera shifts here as noted on the phenocam site
   'cucamongasouth','SH', '1000', # lots of missing data in this one
   'ahwahnee',      'GR', '1000',  # ahwahnee, has three GR timeseries, 3000 is the most recent
@@ -54,7 +54,7 @@ read_in_phenocam_file = function(full_file_path){
   
   read_csv(full_file_path, skip=24) %>%
     select(date, year, doy, gcc_90, smooth_gcc_90, snow_flag, outlierflag_gcc_90) %>%
-    mutate(phenocam_name = phenocam_name, roitype = phenocam_veg, roi = phenocam_roi)
+    mutate(phenocam_name = phenocam_name, roi_type = phenocam_veg, roi_id = phenocam_roi)
 }
 
 phenocam_files = list.files('data/phenocam/', pattern = '_3day.csv', full.names = T)
@@ -62,7 +62,7 @@ phenocam_data = purrr::map_dfr(phenocam_files, read_in_phenocam_file)
 
 # Drop all the timeseries listed above
 phenocam_data = phenocam_data %>%
-  left_join(timeseries_to_drop, by=c('phenocam_name','roitype','roi')) %>%
+  left_join(timeseries_to_drop, by=c('phenocam_name','roi_type','roi_id')) %>%
   mutate(keep = replace_na(keep, TRUE)) %>%
   filter(keep) %>%
   select(-keep)
@@ -80,9 +80,18 @@ phenocam_data$gcc = phenocam_data$smooth_gcc_90
 
 # scale to a site-specific 0-1
 phenocam_data = phenocam_data %>%
-  group_by(phenocam_name, roitype, roi) %>%
+  group_by(phenocam_name, roi_type, roi_id) %>%
   mutate(gcc = (gcc - min(gcc, na.rm = T)) / (max(gcc, na.rm=T)- min(gcc, na.rm=T))) %>%
   ungroup()
+
+#
+unique_timeseries_identifiers = read_csv('site_list.csv') %>%
+  select(phenocam_name, roi_type, roi_id, timeseries_id) %>%
+  mutate(roi_id  = as.character(roi_id))
+
+phenocam_data = phenocam_data %>%
+  left_join(unique_timeseries_identifiers, by= c('phenocam_name', 'roi_type', 'roi_id')) %>% 
+  filter(!is.na(timeseries_id))
 
 write_csv(phenocam_data, 'data/processed_phenocam_data.csv')
 
@@ -98,6 +107,6 @@ write_csv(phenocam_data, 'data/processed_phenocam_data.csv')
 #   #geom_point(aes(y=scaled_gcc_90), color='red') +
 #   geom_vline(data = outliers, aes(xintercept=date), color='blue') +
 # 
-#   facet_wrap(phenocam_name~roitype~roi, scales='free')
+#   facet_wrap(phenocam_name~roi_type~roi_id, scales='free')
 # 
 # ggsave('big_ts_series.png', plot=big_fig, width=80, height=80, unit='cm', dpi=200)
