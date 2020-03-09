@@ -59,6 +59,9 @@ def get_pixel_modis_data(years = range(2010,2019), timeseries_ids = 'all', predi
     phenocam_info = pd.read_csv('site_list.csv')    
     phenocam_data = pd.read_csv('data/processed_phenocam_data.csv').drop('date', axis=1)
     
+    # Drop leap year values to simplify things
+    phenocam_data = phenocam_data[phenocam_data.doy!=366]
+    
     daymet_data = pd.read_csv('data/daymet_data.csv')
     
     if years == 'all':
@@ -90,8 +93,9 @@ def get_pixel_modis_data(years = range(2010,2019), timeseries_ids = 'all', predi
     assert np.isin(predictor_years,daymet_data.year.unique()).all(), 'not all predictor years in daymet data'
     assert np.all(phenocam_data.groupby(['phenocam_name','roi_type','roi_id']).count().doy.unique() >= 365), 'phenocam data has some timeseries_ids with < 365 daily entries'
     assert np.isin(phenocam_data.year.unique(), years).all(), 'extra years in phenocam data'
-    assert np.isin(years,phenocam_data.year.unique()).all(), 'not all years in phenocam data'
-    
+    assert phenocam_data.groupby('timeseries_id').year.nunique().unique().min() == 3, 'some phenocame timeseries with < 3 years'
+    assert phenocam_data.groupby('timeseries_id').year.nunique().unique().max() < 8, 'some phenocame timeseries with >=8 years'
+     
     assert np.isin(daymet_data.phenocam_name.unique(), selected_phenocam_names).all(), 'daymet data has some missing phenocams'
     assert np.isin(selected_phenocam_names,daymet_data.phenocam_name.unique()).all(), 'daymet data has some extra phenocams'
     assert np.isin(phenocam_data.timeseries_id.unique(), timeseries_ids).all(), 'phenocam data has some missing timeseries_ids'
@@ -135,6 +139,11 @@ def get_pixel_modis_data(years = range(2010,2019), timeseries_ids = 'all', predi
     # This will make NA gcc values for those preceding years
     everything = phenocam_data.merge(daymet_data, how='outer', on=['year','doy','timeseries_id'])
     everything.sort_values(['phenocam_name','date'], inplace=True)
+    
+    # Sanity checks
+    assert set(everything.groupby(['timeseries_id','year','doy']).count().tmin.unique()) == set([1]), 'combined data, after processing, has some timeseries/dates names with > 1 entry'
+    assert set(everything.groupby('timeseries_id').year.nunique().unique()) == set([len(predictor_years)]), 'after combining data, some timeseries do not have all years available'
+    assert set(everything.groupby(['timeseries_id','year']).count().tmin.unique()) == set([365]), 'after combining data, some timeseries do not have 365 days of each year'
     
     # Soil and MAP values are a single value/tower, so it doesn't need combining with everything else.
     # Just need to replicate it to different ROIs, and make sure it's ordered correctly
