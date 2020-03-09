@@ -85,7 +85,9 @@ phenocam_data = phenocam_data %>%
   ungroup()
 
 #
-unique_timeseries_identifiers = read_csv('site_list.csv') %>%
+phenocam_sites = read_csv('site_list.csv')
+
+unique_timeseries_identifiers = phenocam_sites %>%
   select(phenocam_name, roi_type, roi_id, timeseries_id) %>%
   mutate(roi_id  = as.character(roi_id))
 
@@ -94,6 +96,11 @@ phenocam_data = phenocam_data %>%
   filter(!is.na(timeseries_id))
 
 write_csv(phenocam_data, 'data/processed_phenocam_data.csv')
+
+# Set a flag to know which timeseries have data to model with
+phenocam_sites = phenocam_sites %>%
+  mutate(has_processed_data = timeseries_id %in% unique(phenocam_data$timeseries_id))
+write_csv(phenocam_sites, 'site_list.csv')
 
 ########################
 # Visualize all timeseries
