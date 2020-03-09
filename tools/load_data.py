@@ -13,7 +13,7 @@ def filter_data(df, y, t):
 
 def long_to_wide(df, index_column, value_column):
     """Long to wide in the shape of (timestep, phenocam_name)"""
-    return df[['phenocam_name',index_column,value_column]].pivot_table(index = index_column, columns='phenocam_name', 
+    return df[['timeseries_id',index_column,value_column]].pivot_table(index = index_column, columns='timeseries_id', 
                                                                   values=value_column, dropna=False)
 
 def marry_array_with_metadata(a, timeseries_id_columns, date_rows, new_variable_colname):
@@ -121,42 +121,53 @@ def get_pixel_modis_data(years = range(2010,2019), timeseries_ids = 'all', predi
 
     
     # Repeat the daymet data for when there is > 1 timeseries at 1 tower
-    daymet_data2=unique_timeseries.merge(daymet_data, how='left', on='phenocam_name')
+    daymet_data=unique_timeseries.merge(daymet_data, how='left', on='phenocam_name')
     
+    assert set(daymet_data.groupby(['timeseries_id','phenocam_name','year','doy']).count().tmin.unique()) == set([1]), 'daymet data, after processing, has some timeseries/dates names with > 1 entry'
+    assert set(daymet_data.groupby(['timeseries_id','year','doy']).count().tmin.unique()) == set([1]), 'daymet data, after processing, has some timeseries/dates names with > 1 entry'
+    assert set(daymet_data.groupby(['phenocam_name','roi_type','roi_id']).timeseries_id.nunique().unique()) == set([1]), 'daymet data, after procesing, has >1 timeseries id per name/roi/roi_id'
+    assert set(daymet_data.groupby('timeseries_id').roi_type.nunique().unique()) == set([1]), 'daymet data, after processing, has >1 phenocam_name per timeseries_id'
+    assert daymet_data.groupby(['year','timeseries_id']).count().doy.unique()[0] == 365, 'daymet data, after processing, has some years != 365 days'
+    
+    # drop these to as their replicated in phenocam_data
+    daymet_data = daymet_data.drop(columns=['phenocam_name','roi_type','roi_id'])
     # Full outer join to combine all selected years + the preceding predictor years
     # This will make NA gcc values for those preceding years
-    everything = phenocam_data.merge(daymet_data, how='outer', on=['year','doy','phenocam_name'])
+    everything = phenocam_data.merge(daymet_data, how='outer', on=['year','doy','timeseries_id'])
     everything.sort_values(['phenocam_name','date'], inplace=True)
     
     # Soil and MAP values are a single value/tower, so it doesn't need combining with everything else.
     # Just need to replicate it to different ROIs, and make sure it's ordered correctly
-    site_level_values = everything[['phenocam_name','roi','roitype']].drop_duplicates().merge(
-        phenocam_info[['phenocam_name','MAP_daymet','Wp','Wcap']], how='inner', on='phenocam_name')
+    site_level_values = unique_timeseries.merge(phenocam_info[['phenocam_name','roi_type','roi_id','MAP_daymet','Wp','Wcap']], 
+                                                how='left', on=['phenocam_name','roi_type','roi_id'])
     
-    soil_data.sort_values('phenocam_name', inplace=True)
+    site_level_values.sort_values('timeseries_id', inplace=True)
     
     # Ensure pixel are aligned in the arrays correctly
-    assert (long_to_wide(everything, index_column = 'date', value_column = 'gcc').columns == soil_data.phenocam_name).all(), 'predictor data.frame not aligning with soil data.frame'
-    assert (long_to_wide(everything, index_column = 'date', value_column = 'ndvi').columns == long_to_wide(everything, index_column = 'date', value_column = 'tmean').columns).all(), 'tmean and ndvi columns not lining up'
+    assert (long_to_wide(everything, index_column = 'date', value_column = 'gcc').columns == site_level_values.timeseries_id).all(), 'predictor data.frame not aligning with soil data.frame'
+    assert (long_to_wide(everything, index_column = 'date', value_column = 'gcc').columns == long_to_wide(everything, index_column = 'date', value_column = 'tmean').columns).all(), 'tmean and ndvi columns not lining up'
     
     # produce (timestep,phenocam_name) numpy arrays.
-    ndvi_pivoted = long_to_wide(everything, index_column = 'date', value_column = 'ndvi')
-    ndvi_array = ndvi_pivoted.values
+    gcc_pivoted = long_to_wide(everything, index_column = 'date', value_column = 'gcc')
+    gcc_array = gcc_pivoted.values
 
+    # the numpy arrays to be fed into GrasslandModels. Everything is float because
+    # the cython code in GrasslandModels is set to that.
     predictor_vars = {}
     predictor_vars['precip'] = long_to_wide(everything, index_column = 'date', value_column = 'precip').values.astype(np.float32)
     predictor_vars['evap'] = long_to_wide(everything, index_column = 'date', value_column = 'et').values.astype(np.float32)
     predictor_vars['Tm'] = long_to_wide(everything, index_column = 'date', value_column = 'tmean').values.astype(np.float32)
     predictor_vars['Ra'] = long_to_wide(everything, index_column = 'date', value_column = 'radiation').values.astype(np.float32)
     
-    # And site specific soil values
-    predictor_vars['Wp'] = soil_data.Wp.values.astype(np.float32)
-    predictor_vars['Wcap'] = soil_data.Wcap.values.astype(np.float32)
+    # And site specific values
+    predictor_vars['MAP'] = site_level_values.MAP_daymet.values.astype(np.float32)
+    predictor_vars['Wp'] = site_level_values.Wp.values.astype(np.float32)
+    predictor_vars['Wcap'] = site_level_values.Wcap.values.astype(np.float32)
     
     # Also return the phenocam_name (columns) and date (rows) indexes so the arrays
     # can be put back together later
-    site_columns = ndvi_pivoted.columns
-    date_rows = ndvi_pivoted.index
+    site_columns = gcc_pivoted.columns
+    date_rows = gcc_pivoted.index
     
     
-    return ndvi_array, predictor_vars, site_columns, date_rows
+    return gcc_array, predictor_vars, site_columns, date_rows
