@@ -25,7 +25,7 @@ def marry_array_with_metadata(a, timeseries_id_columns, date_rows, new_variable_
     df = pd.DataFrame(a,index = date_rows, columns=timeseries_id_columns).reset_index()
     return df.melt(id_vars='date', value_name = new_variable_colname)
 
-def get_pixel_modis_data(years = range(2010,2019), timeseries_ids = 'all', predictor_lag = 5):
+def get_processed_phenocam_data(years = range(2010,2019), timeseries_ids = 'all', predictor_lag = 5):
     """
     Load Phenocam GCC and associated predictor data (daymet precip & temp, 
     ET, daylength, soil)
