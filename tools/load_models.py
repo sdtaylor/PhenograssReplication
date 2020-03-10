@@ -86,8 +86,8 @@ def make_model_set(model_list, note='', model_set_id=None):
     model_filenames = []
     for m in model_list:
         model_name  = m._get_model_info()['model_name'] # ie. Naive, CholerPR1, PhenoGrass, etc.
-        timeseries_set = str(m.metadata['timeseries_set']) # the unique group of timeseries used in this fitting run
-        model_filename = model_name+'-set'+timeseries_set+'-'+model_set_id+'.json'
+        fitting_set = m.metadata['fitting_set']
+        model_filename = fitting_set + '_' +model_name+'_'+model_set_id+'.json'
         
         model_names.append(model_name)
         model_filenames.append(model_filename)
