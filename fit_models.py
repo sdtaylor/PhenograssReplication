@@ -18,6 +18,7 @@ import dask
 
 #models_to_fit = ['Naive','CholerPR1','CholerPR2','CholerPR3','PhenoGrassNDVI']
 models_to_fit = ['Naive','NaiveMAPCorrected']
+loss_function = 'mean_cvmae'
 
 model_fitting_note = 'test run'
 
@@ -91,7 +92,6 @@ def dask_scipy_mapper(func, iterable, c=dask_client):
 ######################################################
 # model fitting delayed(func)(x)
 ######################################################
-loss_function = 'mean_cvmae'
 
 de_fitting_params = {
                      'maxiter':de_maxiter,
