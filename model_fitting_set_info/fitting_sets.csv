@@ -1,4 +1,4 @@
-model_building_sets,n_phenocams,total_site_years
+model_fitting_sets,n_phenocams,total_site_years
 ecoregion-vegtype_NWForests_GR,5,29
 ecoregion-vegtype_ETempForests_AG,18,77.3
 ecoregion-vegtype_ETempForests_GR,5,24.4

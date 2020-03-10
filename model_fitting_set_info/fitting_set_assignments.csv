@@ -1,4 +1,4 @@
-model_building_sets,timeseries_id
+model_fitting_sets,timeseries_id
 ecoregion_NWForests,1
 ecoregion_NWForests,17
 ecoregion_NWForests,21

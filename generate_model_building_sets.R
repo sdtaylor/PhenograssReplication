@@ -33,7 +33,7 @@ ecoregions_vegtype_sets = phenocam_sites %>%
   ungroup() %>%
   filter(n_phenocams>=min_sites_needed) %>%
   left_join(ecoregion_codes, by='ecoregion') %>%
-  mutate(model_building_sets = paste('ecoregion-vegtype',ecoregion_abbr,roi_type,sep='_'))
+  mutate(model_fitting_sets = paste('ecoregion-vegtype',ecoregion_abbr,roi_type,sep='_'))
 
 ecoregions_sets = phenocam_sites %>%
   group_by(ecoregion) %>%
@@ -42,7 +42,7 @@ ecoregions_sets = phenocam_sites %>%
   ungroup() %>%
   filter(n_phenocams>=min_sites_needed) %>%
   left_join(ecoregion_codes, by='ecoregion') %>%
-  mutate(model_building_sets = paste('ecoregion',ecoregion_abbr,sep='_'))
+  mutate(model_fitting_sets = paste('ecoregion',ecoregion_abbr,sep='_'))
 
 vegtype_sets = phenocam_sites %>%
   group_by(roi_type) %>%
@@ -50,30 +50,30 @@ vegtype_sets = phenocam_sites %>%
             total_site_years = sum(site_years)) %>%
   ungroup() %>%
   filter(n_phenocams>=min_sites_needed) %>%
-  mutate(model_building_sets = paste('vegtype',roi_type, sep='_'))
+  mutate(model_fitting_sets = paste('vegtype',roi_type, sep='_'))
 
 ##########################
 # Assign timeseries to each set. A timeseries can be in the 3
 # broad catagories only once each.
 ecoregion_set_assignments = ecoregions_sets %>%
-  select(ecoregion, model_building_sets) %>%
+  select(ecoregion, model_fitting_sets) %>%
   left_join(phenocam_sites, by=c('ecoregion')) %>%
-  select(model_building_sets, timeseries_id)
+  select(model_fitting_sets, timeseries_id)
 
 ecoregions_vegtype_set_assignments = ecoregions_vegtype_sets %>%
-  select(ecoregion, roi_type, model_building_sets) %>%
+  select(ecoregion, roi_type, model_fitting_sets) %>%
   left_join(phenocam_sites, by=c('ecoregion','roi_type')) %>%
-  select(model_building_sets, timeseries_id)
+  select(model_fitting_sets, timeseries_id)
 
 vegtype_assignments = vegtype_sets %>%
-  select(roi_type, model_building_sets) %>%
+  select(roi_type, model_fitting_sets) %>%
   left_join(phenocam_sites, by=c('roi_type')) %>%
-  select(model_building_sets, timeseries_id)
+  select(model_fitting_sets, timeseries_id)
 
 # a model using all available sites
 allsite_assignments = phenocam_sites %>%
-  mutate(model_building_sets = 'allsites') %>%
-  select(model_building_sets, timeseries_id)
+  mutate(model_fitting_sets = 'allsites') %>%
+  select(model_fitting_sets, timeseries_id)
 
 all_assignments = ecoregion_set_assignments %>%
   bind_rows(ecoregions_vegtype_set_assignments) %>%
@@ -89,10 +89,10 @@ if(any(x>4)) stop('some phenocam timeseries added more than 4 times')
 model_building_set_list = ecoregions_vegtype_sets %>%
   bind_rows(ecoregions_sets) %>%
   bind_rows(vegtype_sets) %>%
-  add_row(model_building_sets = 'allsites', n_phenocams = nrow(phenocam_sites), total_site_years = sum(phenocam_sites$site_years)) %>%
-  select(model_building_sets, n_phenocams, total_site_years)
+  add_row(model_fitting_sets = 'allsites', n_phenocams = nrow(phenocam_sites), total_site_years = sum(phenocam_sites$site_years)) %>%
+  select(model_fitting_sets, n_phenocams, total_site_years)
 
 
 ##############################################
-write_csv(all_assignments, 'model_set_info/model_set_assignments.csv')
-write_csv(model_building_set_list, 'model_set_info/model_sets.csv')
+write_csv(all_assignments, 'model_fitting_set_info/fitting_set_assignments.csv')
+write_csv(model_building_set_list, 'model_fitting_set_info/fitting_sets.csv')
