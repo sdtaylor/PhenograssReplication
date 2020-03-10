@@ -71,7 +71,7 @@ def get_processed_phenocam_data(years = range(2010,2019), timeseries_ids = 'all'
     years.sort()
     
     available_timeseries_ids = phenocam_data.timeseries_id.unique()
-    if timeseries_ids == 'all':
+    if isinstance(timeseries_ids, str) and timeseries_ids=='all':
         timeseries_ids = available_timeseries_ids
     else:
         # Make sure selected timeseries_ids are actually available in the NDVI dataset
