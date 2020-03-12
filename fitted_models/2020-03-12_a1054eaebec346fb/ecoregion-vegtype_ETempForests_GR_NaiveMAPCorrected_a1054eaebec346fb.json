@@ -1,0 +1,24 @@
+{
+    "model_name": "NaiveMAPCorrected",
+    "parameters": {
+        "b1": 0.008990512848491505,
+        "b2": 0.0007258181169618183,
+        "L": 59.90532754623921,
+        "h": 984.9469649119451
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.608359929988449,
+                "nfev": 102400,
+                "nit": 127,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "ecoregion-vegtype_ETempForests_GR",
+        "timeseries_used": "9,60,80,95,108"
+    }
+}

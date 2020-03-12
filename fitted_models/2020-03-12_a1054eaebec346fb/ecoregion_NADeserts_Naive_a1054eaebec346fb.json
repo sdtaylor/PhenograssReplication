@@ -1,0 +1,23 @@
+{
+    "model_name": "Naive",
+    "parameters": {
+        "b1": 0.13544247695320166,
+        "b2": 0.002960932641606462,
+        "L": 46.74344813732918
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.5532318474198777,
+                "nfev": 42000,
+                "nit": 69,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "ecoregion_NADeserts",
+        "timeseries_used": "10,28,30,33,34,35,68,69,70,71,73,77,78"
+    }
+}

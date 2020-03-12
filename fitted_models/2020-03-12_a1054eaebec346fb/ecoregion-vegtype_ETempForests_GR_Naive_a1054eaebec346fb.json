@@ -1,0 +1,23 @@
+{
+    "model_name": "Naive",
+    "parameters": {
+        "b1": 0.03041172672059389,
+        "b2": 0.0012510644884855537,
+        "L": 59.64917946960738
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.6110681029327136,
+                "nfev": 55200,
+                "nit": 91,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "ecoregion-vegtype_ETempForests_GR",
+        "timeseries_used": "9,60,80,95,108"
+    }
+}

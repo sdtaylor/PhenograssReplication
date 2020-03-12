@@ -1,0 +1,29 @@
+{
+    "model_name": "PhenoGrass",
+    "parameters": {
+        "b2": 0.001242222414959776,
+        "b3": 0.03581143752097926,
+        "b4": 1.3155337813998527,
+        "Phmax": 34.25428051297567,
+        "Phmin": 1.09847302248507,
+        "Topt": 30.39585062432287,
+        "L": 17.7377937770368,
+        "h": 221.65604188559348,
+        "b1": -1
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.34240914099122727,
+                "nfev": 3201600,
+                "nit": 2000,
+                "message": "Maximum number of iterations has been exceeded.",
+                "success": false
+            }
+        },
+        "fitting_set": "ecoregion_NWForests",
+        "timeseries_used": "1,17,21,57,58,59,79"
+    }
+}

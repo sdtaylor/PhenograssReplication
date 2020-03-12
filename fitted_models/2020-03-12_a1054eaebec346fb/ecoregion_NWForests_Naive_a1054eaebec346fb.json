@@ -1,0 +1,23 @@
+{
+    "model_name": "Naive",
+    "parameters": {
+        "b1": 0.13475101006900303,
+        "b2": 0.0003817573477249425,
+        "L": 59.22959289188806
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.7096340565477658,
+                "nfev": 39000,
+                "nit": 64,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "ecoregion_NWForests",
+        "timeseries_used": "1,17,21,57,58,59,79"
+    }
+}

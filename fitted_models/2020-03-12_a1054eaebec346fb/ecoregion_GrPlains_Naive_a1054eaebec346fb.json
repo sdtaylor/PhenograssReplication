@@ -1,0 +1,23 @@
+{
+    "model_name": "Naive",
+    "parameters": {
+        "b1": 0.030038575937311407,
+        "b2": 0.002571547789301576,
+        "L": 44.5833815386535
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.5898129967862731,
+                "nfev": 49200,
+                "nit": 81,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "ecoregion_GrPlains",
+        "timeseries_used": "7,12,13,14,15,20,36,46,47,49,50,52,53,54,55,56,61,62,63,64,65,66,67,74,76,81,97,107"
+    }
+}
