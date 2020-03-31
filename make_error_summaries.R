@@ -46,6 +46,7 @@ for(fitting_set_i in 1:nrow(fitting_sets)){
     get_allsite_errors           = TRUE
     
     ecoregion = str_split(prediction_scale, '_')[[1]][2]
+    vegtype   = NA
   } else if(set_scale == 'vegtype'){
     get_ecoregion_errors         = FALSE
     get_vegtype_errors           = TRUE
@@ -53,6 +54,7 @@ for(fitting_set_i in 1:nrow(fitting_sets)){
     get_allsite_errors           = TRUE
     
     vegtype = str_split(prediction_scale, '_')[[1]][2]
+    ecoregion = NA
   }
   
   # Errors from the ecoregion level model
