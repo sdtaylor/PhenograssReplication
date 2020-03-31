@@ -33,7 +33,8 @@ ecoregions_vegtype_sets = phenocam_sites %>%
   ungroup() %>%
   filter(n_phenocams>=min_sites_needed) %>%
   left_join(ecoregion_codes, by='ecoregion') %>%
-  mutate(model_fitting_sets = paste('ecoregion-vegtype',ecoregion_abbr,roi_type,sep='_'))
+  mutate(model_fitting_sets = paste('ecoregion-vegtype',ecoregion_abbr,roi_type,sep='_')) %>%
+  mutate(model_fitting_scale = 'ecoregion-vegtype')
 
 ecoregions_sets = phenocam_sites %>%
   group_by(ecoregion) %>%
@@ -42,7 +43,8 @@ ecoregions_sets = phenocam_sites %>%
   ungroup() %>%
   filter(n_phenocams>=min_sites_needed) %>%
   left_join(ecoregion_codes, by='ecoregion') %>%
-  mutate(model_fitting_sets = paste('ecoregion',ecoregion_abbr,sep='_'))
+  mutate(model_fitting_sets = paste('ecoregion',ecoregion_abbr,sep='_')) %>%
+  mutate(model_fitting_scale = 'ecoregion')
 
 vegtype_sets = phenocam_sites %>%
   group_by(roi_type) %>%
@@ -50,7 +52,8 @@ vegtype_sets = phenocam_sites %>%
             total_site_years = sum(site_years)) %>%
   ungroup() %>%
   filter(n_phenocams>=min_sites_needed) %>%
-  mutate(model_fitting_sets = paste('vegtype',roi_type, sep='_'))
+  mutate(model_fitting_sets = paste('vegtype',roi_type, sep='_')) %>%
+  mutate(model_fitting_scale = 'vegtype')
 
 ##########################
 # Assign timeseries to each set. A timeseries can be in the 3
@@ -89,8 +92,8 @@ if(any(x>4)) stop('some phenocam timeseries added more than 4 times')
 model_building_set_list = ecoregions_vegtype_sets %>%
   bind_rows(ecoregions_sets) %>%
   bind_rows(vegtype_sets) %>%
-  add_row(model_fitting_sets = 'allsites', n_phenocams = nrow(phenocam_sites), total_site_years = sum(phenocam_sites$site_years)) %>%
-  select(model_fitting_sets, n_phenocams, total_site_years)
+  add_row(model_fitting_sets = 'allsites',model_fitting_scale='allsites', n_phenocams = nrow(phenocam_sites), total_site_years = sum(phenocam_sites$site_years)) %>%
+  select(model_fitting_sets,model_fitting_scale, n_phenocams, total_site_years)
 
 
 ##############################################
