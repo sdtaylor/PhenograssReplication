@@ -29,9 +29,9 @@ for fit_model in fitted_models:
     m = fit_model['model']
     
     fitting_set = m.metadata['fitting_set']
-    timeseries_used = list(literal_eval(m.metadata['timeseries_used'])) # these are stored as a str, '1,2,3,4,5', for clarity
+    #timeseries_used = list(literal_eval(m.metadata['timeseries_used'])) # these are stored as a str, '1,2,3,4,5', for clarity
 
-    gcc_observed, predictor_data, site_cols, date_rows = get_processed_phenocam_data(timeseries_ids = timeseries_used,
+    gcc_observed, predictor_data, site_cols, date_rows = get_processed_phenocam_data(timeseries_ids = 'all',
                                                                                      years='all',
                                                                                      predictor_lag=5)
     
