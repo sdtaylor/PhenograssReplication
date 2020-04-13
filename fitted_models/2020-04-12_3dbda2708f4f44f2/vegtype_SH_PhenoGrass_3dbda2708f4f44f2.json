@@ -1,0 +1,29 @@
+{
+    "model_name": "PhenoGrass",
+    "parameters": {
+        "b2": 0.00031234983242900416,
+        "b3": 0.03767918514521007,
+        "b4": 0.1738842494215751,
+        "Phmax": 44.49688381476493,
+        "Phmin": 6.441138138442586,
+        "Topt": 26.080082572232982,
+        "L": 0.7305839315218847,
+        "h": 343.21325204831294,
+        "b1": -1
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.3763469112363257,
+                "nfev": 3656000,
+                "nit": 2284,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "vegtype_SH",
+        "timeseries_used": "10,21,30,33,34,35,37,45,48,70,73,78,92"
+    }
+}
