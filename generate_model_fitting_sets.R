@@ -11,18 +11,7 @@ min_sites_needed = 5
 phenocam_sites = read_csv('site_list.csv') %>%
   filter(has_processed_data) 
 
-ecoregion_codes = tribble(
-  ~ecoregion, ~ecoregion_desc, ~ecoregion_abbr,
-  5, 'Northern Forests',                'NForest',
-  6, 'Northwestern Forested Mountains', 'NWForests',
-  7, 'Marine West Coast Forest',        'MWCoastForests',
-  8, 'Eastern Temperate Forests',       'ETempForests',
-  9, 'Great Plains',                    'GrPlains',
-  10,'North American Deserts',          'NADeserts',
-  11,'Mediterranean California',        'MedCA',
-  12,'Southern Semi-Arid Highlands',    'SouthAridHighliands'
-)
-
+ecoregion_codes = read_csv('model_fitting_set_info/ecoregion_codes.csv')
 
 ##########################
 
