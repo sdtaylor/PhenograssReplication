@@ -39,14 +39,25 @@ errors = all_predictions %>%
 fitting_sets = read_csv('model_fitting_set_info/fitting_sets.csv')
 fitting_set_assignments = read_csv('model_fitting_set_info/fitting_set_assignments.csv')
 
+#######################################
+# Calculate summary errors at the landcover/ecoregion scale for the main result table
+# calculate site level errors for every tower/roi for a supplement table
+site_level_errors = FALSE
+if(site_level_errors){
+  error_grouping = c('fitting_set', 'model', 'timeseries_id')
+} else {
+  error_grouping = c('fitting_set', 'model')
+}
+
 summarised_errors = tibble()
+
 
 # Iterate thru all fitting sets and apply different predictions
 # to them.
 for(fitting_set_i in 1:nrow(fitting_sets)){
   prediction_scale = fitting_sets$model_fitting_sets[fitting_set_i]
   set_scale   = fitting_sets$model_fitting_scale[fitting_set_i]
-
+  
   set_sites = fitting_set_assignments %>%
     filter(model_fitting_sets == prediction_scale) %>%
     pull(timeseries_id)
@@ -81,7 +92,7 @@ for(fitting_set_i in 1:nrow(fitting_sets)){
     ecoregion_set = paste0('ecoregion_',ecoregion)
     summarised_errors = errors %>%
       filter(fitting_set == ecoregion_set, timeseries_id %in% set_sites) %>%
-      group_by(fitting_set, timeseries_id) %>%
+      group_by(!!!rlang::syms(error_grouping)) %>%
       summarise(mean_r2 = mean(r2), prediction_n=n()) %>%
       ungroup() %>%
       mutate(prediction_set = prediction_scale) %>%
@@ -94,7 +105,7 @@ for(fitting_set_i in 1:nrow(fitting_sets)){
     vegype_set = paste0('vegtype_',vegtype)
     summarised_errors = errors %>%
       filter(fitting_set == vegype_set, timeseries_id %in% set_sites) %>%
-      group_by(fitting_set, model, timeseries_id) %>%
+      group_by(!!!rlang::syms(error_grouping)) %>%
       summarise(mean_r2 = mean(r2), prediction_n=n()) %>%
       ungroup() %>%
       mutate(prediction_set = prediction_scale) %>%
@@ -107,7 +118,7 @@ for(fitting_set_i in 1:nrow(fitting_sets)){
     ecorgion_vegtype_set = prediction_scale # These are the same in this case
     summarised_errors = errors %>%
       filter(fitting_set == ecorgion_vegtype_set, timeseries_id %in% set_sites) %>%
-      group_by(fitting_set, model) %>%
+      group_by(!!!rlang::syms(error_grouping)) %>%
       summarise(mean_r2 = mean(r2), prediction_n=n()) %>%
       ungroup() %>%
       mutate(prediction_set = prediction_scale) %>%
@@ -119,7 +130,7 @@ for(fitting_set_i in 1:nrow(fitting_sets)){
   if(get_allsite_errors){
     summarised_errors = errors %>%
       filter(fitting_set == 'allsites', timeseries_id %in% set_sites) %>%
-      group_by(fitting_set, model) %>%
+      group_by(!!!rlang::syms(error_grouping)) %>%
       summarise(mean_r2 = mean(r2), prediction_n=n()) %>%
       ungroup() %>%
       mutate(prediction_set = prediction_scale) %>%
@@ -136,7 +147,7 @@ summarised_errors %>%
   select(-fitting_set,-prediction_n) %>%
   spread(fitting_scale, mean_r2) %>%
   write_csv('error_table.csv')
-  
+
 ##########################################
 
 
