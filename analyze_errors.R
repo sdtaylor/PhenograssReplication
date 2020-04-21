@@ -149,33 +149,66 @@ for(fitting_set_i in 1:nrow(fitting_sets)){
 }
 
 
+if(site_level_errors) {
+  # For site level errors drop the prediction_set information
+  # because no aggregation is being done
+  summarised_errors = summarised_errors %>%
+    select(-prediction_set) %>%
+    distinct()
+  
+  # A sanity check that the "mean" error value is only coming
+  # from 1 number
+  if(!all(summarised_errors$prediction_n==1)){
+    stop('More than 1 replicate in some site level errors')
+  }
+  
+  # Label with site  metadata and  save
+  ecoregion_codes = read_csv('model_fitting_set_info/ecoregion_codes.csv')
+  site_info = read_csv('site_list.csv') %>%
+    left_join(ecoregion_codes, by='ecoregion') %>%
+    select(timeseries_id, phenocam_name, roi_type, ecoregion_desc)
+  
+  summarised_errors %>%
+    filter(model=='PhenoGrass') %>%
+    select(-fitting_set,-prediction_n,-model) %>%
+    mutate(mean_r2 = round(mean_r2,2)) %>%
+    spread(fitting_scale, mean_r2) %>%
+    left_join(site_info, by='timeseries_id') %>%
+    select(ecoregion_desc, roi_type, phenocam_name, everything()) %>% # reorder columns for table
+    arrange(ecoregion_desc, roi_type) %>% 
+    write_csv('results/site_level_error_table.csv')
+  
+} else{
+  # The  primary error table
+  summarised_errors %>%
+    filter(model=='PhenoGrass') %>%
+    select(-model) %>%
+    mutate(mean_r2 = round(mean_r2,2)) %>%
+    select(-fitting_set,-prediction_n) %>%
+    spread(fitting_scale, mean_r2) %>%
+    write_csv('results/primary_error_table.csv')
+}
+
 
 #########################################
-summarised_errors %>%
-  filter(model=='PhenoGrass') %>%
-  select(-fitting_set,-prediction_n) %>%
-  spread(fitting_scale, mean_r2) %>%
-  write_csv('error_table.csv')
+# Some other potential error table formats
 
-##########################################
-
-
-summary_table = errors %>%
-  gather(error_metric, error_value, rmse, r2) %>%
-  mutate(error_value = round(error_value, 3)) %>%
-  spread(model, error_value) %>%
-  mutate(scale = case_when(
-    str_detect(fitting_set,'allsites') ~ 'All Sites',
-    str_detect(fitting_set,'ecoregion-vegtype') ~ 'Within Ecoregion',
-    str_detect(fitting_set,'ecoregion_') ~ 'Entire Ecoregion',
-    str_detect(fitting_set,'vegtype_') ~ 'All Vegtype Sites',
-    TRUE ~ 'unk scale'
-  ))
-
-summary_table$scale = fct_relevel(summary_table$scale, 'All Sites','All Vegtype Sites', 
-                                  'Entire Ecoregion', 'Within Ecoregion')
-
-
-summary_table %>%
-  select(scale, everything()) %>%
-  write_csv('error_table.csv')
+# summary_table = errors %>%
+#   gather(error_metric, error_value, rmse, r2) %>%
+#   mutate(error_value = round(error_value, 3)) %>%
+#   spread(model, error_value) %>%
+#   mutate(scale = case_when(
+#     str_detect(fitting_set,'allsites') ~ 'All Sites',
+#     str_detect(fitting_set,'ecoregion-vegtype') ~ 'Within Ecoregion',
+#     str_detect(fitting_set,'ecoregion_') ~ 'Entire Ecoregion',
+#     str_detect(fitting_set,'vegtype_') ~ 'All Vegtype Sites',
+#     TRUE ~ 'unk scale'
+#   ))
+# 
+# summary_table$scale = fct_relevel(summary_table$scale, 'All Sites','All Vegtype Sites', 
+#                                   'Entire Ecoregion', 'Within Ecoregion')
+# 
+# 
+# summary_table %>%
+#   select(scale, everything()) %>%
+#   write_csv('error_table.csv')
