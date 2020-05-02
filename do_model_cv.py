@@ -21,6 +21,26 @@ of the models.
 
 """
 
+#    Some stuff to get the fitting procedure in GrasslandModels to
+#    work on a dask cluster. A bit convoluted, sorry.
+#
+#    The default opimizer, scipy.optimize.differential_evolution, can be done in parallel.
+#    Either by passing the number of processes, or map function to the 'workers' arg.
+#    Here I pass a map function which then passes on the jobs to dask workers. Each job
+#    is a set of parameters to test on the data, thus each worker needs a persistant copy
+#    of the data to be efficient.
+#
+#    Three main things need to happen.
+#
+#    1. The workers each load their own copy of the same dataset to fit on. This
+#       is then accessed via a dask.future object
+#    2. A loss function is setup which incorporates the dask.future object. The
+#       loss function is passed as the func arg to optimize.differential_evolution
+#    3. A map function is setup which is passed to optimize.differential_evolution
+#       and accepts a list of parameter sets to evaluate. The map function submits
+#       this to the dask scheduler, and on completion, returns a list of loss
+#       values to optimize.differential_evolution.
+
 def load_model_on_worker(model_name, param_ranges, loss_function, timeseries_ids, years):
     """
     This is designed to be passed as a future using dask.client.submit
