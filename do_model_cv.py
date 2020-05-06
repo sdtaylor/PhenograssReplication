@@ -80,7 +80,7 @@ cluster = ClusterWrapper(n_workers = ceres_workers,
                          partition_name = ceres_partition)
 cluster.start()
 dask_client = cluster.get_client()
-dask_client = Client()
+#dask_client = Client()
 
 ######################################################
 # model fitting delayed(func)(x)
@@ -164,6 +164,7 @@ if __name__=='__main__':
                                  model_params = parameter_ranges[model_name],
                                  timeseries_ids=this_set_timeseries, 
                                  years='all',
+                                 loss_function = loss_function,
                                  fitting_params=de_fitting_params, 
                                  chunks_per_job=chunks_per_job)
             

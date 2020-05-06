@@ -4,7 +4,7 @@ import GrasslandModels
 
 from dask_jobqueue import SLURMCluster
 
-from .tools.load_data import get_processed_phenocam_data
+from tools.load_data import get_processed_phenocam_data
 
 from scipy import optimize
 from time import sleep
@@ -50,9 +50,9 @@ class ClusterWrapper():
                                     death_timeout=600, 
                                     local_directory='/tmp/')
         
+        self.client = Client(self.cluster)
         self.workers = self.cluster.scale(self.n_workers)
         self.wait_for_workers()
-        self.client = Client(self.cluster)
     def get_client(self):
         return self.client
     
@@ -120,6 +120,7 @@ def setup_workers(client, model_name, model_params, loss_function, timeseries_id
     model_future = client.submit(load_model_on_worker,
                                  model_name = model_name, 
                                  param_ranges = model_params,
+                                 loss_function = loss_function,
                                  timeseries_ids = timeseries_ids,
                                  years=years)
     # Have the model and data loaded on all workers
