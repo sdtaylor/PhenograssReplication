@@ -9,6 +9,7 @@ from tools.dask_tools import ClusterWrapper, dask_fit
 from scipy import optimize
 from time import sleep
 import toolz
+from copy import copy
 
 #from dask_jobqueue import SLURMCluster
 from dask.distributed import Client, as_completed
@@ -24,21 +25,24 @@ of the models.
 
 ###############################################
 
-#models_to_fit = ['Naive','CholerPR1','CholerPR2','CholerPR3','PhenoGrassNDVI']
-models_to_fit = ['Naive']
-loss_function = 'mean_cvmae'
+models_to_validate = ["ecoregion-vegtype_NWForests_GR_PhenoGrass_3dbda2708f4f44f2.json",
+                      "ecoregion-vegtype_ETempForests_GR_PhenoGrass_3dbda2708f4f44f2.json",
+                      "ecoregion-vegtype_GrPlains_GR_PhenoGrass_3dbda2708f4f44f2.json",
+                      "ecoregion-vegtype_NADeserts_GR_PhenoGrass_3dbda2708f4f44f2.json"]
+model_folder = 'fitted_models/2020-04-12_3dbda2708f4f44f2/'
 
-model_fitting_note = 'test run for dask fitting class'
+model_fitting_note = 'test run for cross validation'
 
-fitting_sets = pd.read_csv('model_fitting_set_info/fitting_sets.csv')
-fitting_set_assignments = pd.read_csv('model_fitting_set_info/fitting_set_assignments.csv')
 
 ###############################################3
+# Fitting stuff
+loss_function = 'mean_cvmae'
+de_popsize     = 5
+de_maxiter     = 3
+
 # Dask/ceres stuff
 chunks_per_job = 20
 parameters_count = 8 # phenograss parameters since its the most intensive. 
-de_popsize     = 100
-de_maxiter     = 50
 
 use_default_workers = False
 default_workers = 100
@@ -78,9 +82,9 @@ cluster = ClusterWrapper(n_workers = ceres_workers,
                          mem_per_worker = ceres_mem_per_worker, 
                          worker_walltime = ceres_worker_walltime,
                          partition_name = ceres_partition)
-cluster.start()
-dask_client = cluster.get_client()
-#dask_client = Client()
+#cluster.start()
+#dask_client = cluster.get_client()
+dask_client = Client()
 
 ######################################################
 # model fitting delayed(func)(x)
@@ -96,33 +100,7 @@ de_fitting_params = {
                      'disp':True}
 
 # the search ranges for the model parameters
-parameter_ranges = {'CholerPR1':{'b1':(0,200),
-                                 'b2':(0,10),
-                                 'b3':(0,10),
-                                 'L' : 2},
-                    'CholerPR2':{'b1':(0,200),
-                                 'b2':(0,10),
-                                 'b3':(0,10),
-                                 'b4':(0,200),
-                                 'L' : 2},
-                    'CholerPR3':{'b1':(0,200),
-                                 'b2':(0,10),
-                                 'b3':(0,10),
-                                 'b4':(0,200),
-                                 'L' : 2},
-                    'CholerMPR2':{'b2':(0,10),
-                                  'b3':(0,10),
-                                  'b4':(0,200),
-                                  'L' :2},
-                    'CholerMPR3':{'b2':(0,10),
-                                  'b3':(0,10),
-                                  'b4':(0,200),
-                                  'L' :2},
-                    'CholerM1A':{'L' :2},
-                    'CholerM1B':{'L' :2},
-                    'CholerM2A':{},
-                    'CholerM2B':{},
-                    'PhenoGrass':{'b1': -1, # b1 is a not actually used in phenograss at the moment, 
+parameter_ranges = {'PhenoGrass':{'b1': -1, # b1 is a not actually used in phenograss at the moment, 
                                                 # see https://github.com/sdtaylor/GrasslandModels/issues/2
                                                 # Setting to -1 makes it so the optimization doesn't waste time on b1
                                   'b2': (0,0.5), 
@@ -133,47 +111,46 @@ parameter_ranges = {'CholerPR1':{'b1':(0,200),
                                   'Topt': (0,45), 
                                   'h': (1,1000), # TODO: let this vary when fitting > 1 site
                                   #'h': (1,1000),
-                                  'L': (0,30)},
-                    'Naive' : {'b1':(0,100),
-                               'b2':(0,100),
-                               'L': (0,60)},
-                    'NaiveMAPCorrected' : {'b1':(0,100),
-                               'b2':(0,100),
-                               'h':(1,1000),
-                               'L': (0,60)}
-                    }
+                                  'L': (0,30)}}
 
 
 if __name__=='__main__':
     fit_models = []
-    
-    total_sets = len(fitting_sets)
-    
-    for fitting_set_i, this_fitting_set in enumerate(fitting_sets.model_fitting_sets):
-        this_set_timeseries = fitting_set_assignments[fitting_set_assignments.model_fitting_sets==this_fitting_set].timeseries_id
+    for model_file in models_to_validate:
+        old_fit_model = GrasslandModels.utils.load_saved_model(model_folder+model_file)
         
-        for model_name in models_to_fit:
-            #print('scheduler address: '+dask_client.scheduler_info()['address'])
-            #print('set {s} - {n}/{t} - {m}'.format(s=this_fitting_set,n=fitting_set_i, t=total_sets,m=model_name))
-            # This future is the model, with fitting data, being loaded on all
-            # the nodes by replicate()
-            
+        # Fix the h value to the original one estimated
+        # The rest of the parameters will be estimated.
+        initial_params_to_use = copy(parameter_ranges['PhenoGrass'])
+        initial_params_to_use['h'] = old_fit_model.get_params()['h']
+        
+        
+        model_timeseries = old_fit_model.metadata['timeseries_used']
+        model_timeseries = [int(t) for t in model_timeseries.split(',')] # from a comma delimated str to a list
+        
+        for left_out_ts in model_timeseries:
+            fitting_ts = [ts for ts in model_timeseries if ts is not left_out_ts]
+            #print(fitting_ts,left_out_ts)
             
             fitted_model = dask_fit(client=dask_client, 
-                                 model_name=model_name, 
-                                 model_params = parameter_ranges[model_name],
-                                 timeseries_ids=this_set_timeseries, 
-                                 years='all',
-                                 loss_function = loss_function,
-                                 fitting_params=de_fitting_params, 
-                                 chunks_per_job=chunks_per_job)
+                                    model_name='PhenoGrass', 
+                                    model_params = initial_params_to_use,
+                                    timeseries_ids=fitting_ts, 
+                                    years='all',
+                                    loss_function = loss_function,
+                                    fitting_params=de_fitting_params, 
+                                    chunks_per_job=chunks_per_job)
             
-            fitted_model.update_metadata(fitting_set =  this_fitting_set)
-            fitted_model.update_metadata(timeseries_used = ','.join([str(t) for t in this_set_timeseries]))
+            #TODO: need to make the model names unique here somehow
+            # so they can  be saved to their own files. 
+            # probably in the fitting set.
+            fitted_model.update_metadata(model_evaluated = model_file)
+            fitted_model.update_metadata(timeseries_used = ','.join([str(t) for t in fitting_ts]))
+            fitted_model.update_metadata(fitting_set =  model_file)
+            fitted_model.update_metadata(left_out_timeseries = left_out_ts)
 
             fit_models.append(fitted_model)
-    
-    
+        
     # compile all the models into a set and save
     model_set = load_models.make_model_set(fit_models,  note=model_fitting_note)
     load_models.save_model_set(model_set)
