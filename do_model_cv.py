@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import GrasslandModels
 
-from tools.load_data import get_processed_phenocam_data
+from tools.load_data import get_processed_phenocam_data, marry_array_with_metadata
 from tools import load_models
 from tools.dask_tools import ClusterWrapper, dask_fit
 
@@ -25,10 +25,10 @@ of the models.
 
 ###############################################
 
-models_to_validate = ["ecoregion-vegtype_NWForests_GR_PhenoGrass_3dbda2708f4f44f2.json",
-                      "ecoregion-vegtype_ETempForests_GR_PhenoGrass_3dbda2708f4f44f2.json",
-                      "ecoregion-vegtype_GrPlains_GR_PhenoGrass_3dbda2708f4f44f2.json",
-                      "ecoregion-vegtype_NADeserts_GR_PhenoGrass_3dbda2708f4f44f2.json"]
+models_to_validate = {'NWForests_GR'    : "ecoregion-vegtype_NWForests_GR_PhenoGrass_3dbda2708f4f44f2.json",
+                      'ETempForests_GR' : "ecoregion-vegtype_ETempForests_GR_PhenoGrass_3dbda2708f4f44f2.json",
+                      'GrPlains_GR'     : "ecoregion-vegtype_GrPlains_GR_PhenoGrass_3dbda2708f4f44f2.json",
+                      'NADeserts_GR'    : "ecoregion-vegtype_NADeserts_GR_PhenoGrass_3dbda2708f4f44f2.json"}
 model_folder = 'fitted_models/2020-04-12_3dbda2708f4f44f2/'
 
 model_fitting_note = 'test run for cross validation'
@@ -109,14 +109,14 @@ parameter_ranges = {'PhenoGrass':{'b1': -1, # b1 is a not actually used in pheno
                                   'Phmax': (1,50),
                                   'Phmin': (1,50),
                                   'Topt': (0,45), 
-                                  'h': (1,1000), # TODO: let this vary when fitting > 1 site
+                                  'h': (1,1000), 
                                   #'h': (1,1000),
                                   'L': (0,30)}}
 
 
 if __name__=='__main__':
-    fit_models = []
-    for model_file in models_to_validate:
+    all_fitted_models = []
+    for fitting_set, model_file in models_to_validate.items():
         old_fit_model = GrasslandModels.utils.load_saved_model(model_folder+model_file)
         
         # Fix the h value to the original one estimated
@@ -141,16 +141,18 @@ if __name__=='__main__':
                                     fitting_params=de_fitting_params, 
                                     chunks_per_job=chunks_per_job)
             
-            #TODO: need to make the model names unique here somehow
-            # so they can  be saved to their own files. 
-            # probably in the fitting set.
+          
+            # A unique  identifier for this model within the cross-validation.
+            # The fitting set appended with the timeseries used to fit
+            fitting_set_id = fitting_set + '-' + '_'.join([str(t) for t in fitting_ts])
+            
             fitted_model.update_metadata(model_evaluated = model_file)
             fitted_model.update_metadata(timeseries_used = ','.join([str(t) for t in fitting_ts]))
-            fitted_model.update_metadata(fitting_set =  model_file)
+            fitted_model.update_metadata(fitting_set =  fitting_set_id)
             fitted_model.update_metadata(left_out_timeseries = left_out_ts)
 
-            fit_models.append(fitted_model)
+            all_fitted_models.append(fitted_model)
         
     # compile all the models into a set and save
-    model_set = load_models.make_model_set(fit_models,  note=model_fitting_note)
+    model_set = load_models.make_model_set(all_fitted_models,  note=model_fitting_note)
     load_models.save_model_set(model_set)
