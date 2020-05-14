@@ -31,18 +31,18 @@ models_to_validate = {'NWForests_GR'    : "ecoregion-vegtype_NWForests_GR_PhenoG
                       'NADeserts_GR'    : "ecoregion-vegtype_NADeserts_GR_PhenoGrass_3dbda2708f4f44f2.json"}
 model_folder = 'fitted_models/2020-04-12_3dbda2708f4f44f2/'
 
-model_fitting_note = 'test run for cross validation'
+model_fitting_note = 'first go at leave 1 out CV with the 4 GR models'
 
 
 ###############################################3
 # Fitting stuff
 loss_function = 'mean_cvmae'
-de_popsize     = 5
-de_maxiter     = 3
+de_popsize     = 400
+de_maxiter     = 10000
 
 # Dask/ceres stuff
 chunks_per_job = 20
-parameters_count = 8 # phenograss parameters since its the most intensive. 
+parameters_count = 7 # phenograss parameters since its the most intensive. 
 
 use_default_workers = False
 default_workers = 100
@@ -82,9 +82,9 @@ cluster = ClusterWrapper(n_workers = ceres_workers,
                          mem_per_worker = ceres_mem_per_worker, 
                          worker_walltime = ceres_worker_walltime,
                          partition_name = ceres_partition)
-#cluster.start()
-#dask_client = cluster.get_client()
-dask_client = Client()
+cluster.start()
+dask_client = cluster.get_client()
+#dask_client = Client()
 
 ######################################################
 # model fitting delayed(func)(x)
@@ -116,6 +116,7 @@ parameter_ranges = {'PhenoGrass':{'b1': -1, # b1 is a not actually used in pheno
 
 if __name__=='__main__':
     all_fitted_models = []
+    fitting_model_i = 0 
     for fitting_set, model_file in models_to_validate.items():
         old_fit_model = GrasslandModels.utils.load_saved_model(model_folder+model_file)
         
@@ -152,6 +153,12 @@ if __name__=='__main__':
             fitted_model.update_metadata(left_out_timeseries = left_out_ts)
 
             all_fitted_models.append(fitted_model)
+
+            # Get around the 2 day limit on the short partition by just restarting the workers every now and then
+            fitting_model_i += 1
+            if fitting_model_i % 5 ==0:
+                print('restarting cluster workers')
+                cluster.restart_workers()
         
     # compile all the models into a set and save
     model_set = load_models.make_model_set(all_fitted_models,  note=model_fitting_note)

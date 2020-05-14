@@ -53,6 +53,13 @@ class ClusterWrapper():
         self.client = Client(self.cluster)
         self.workers = self.cluster.scale(self.n_workers)
         self.wait_for_workers()
+
+    def restart_workers(self):
+        self.cluster.scale(n=0)
+        sleep(30)
+        self.workers = self.cluster.scale(self.n_workers)
+        self.wait_for_workers()
+
     def get_client(self):
         return self.client
     
