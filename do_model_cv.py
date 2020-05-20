@@ -41,7 +41,7 @@ de_popsize     = 400
 de_maxiter     = 10000
 
 # Dask/ceres stuff
-chunks_per_job = 20
+chunks_per_job = 15
 parameters_count = 7 # phenograss parameters since its the most intensive. 
 
 use_default_workers = False
@@ -117,6 +117,7 @@ parameter_ranges = {'PhenoGrass':{'b1': -1, # b1 is a not actually used in pheno
 if __name__=='__main__':
     all_fitted_models = []
     fitting_model_i = 0 
+    failed_fits = []
     for fitting_set, model_file in models_to_validate.items():
         old_fit_model = GrasslandModels.utils.load_saved_model(model_folder+model_file)
         
@@ -132,27 +133,32 @@ if __name__=='__main__':
         for left_out_ts in model_timeseries:
             fitting_ts = [ts for ts in model_timeseries if ts is not left_out_ts]
             #print(fitting_ts,left_out_ts)
-            
-            fitted_model = dask_fit(client=dask_client, 
-                                    model_name='PhenoGrass', 
-                                    model_params = initial_params_to_use,
-                                    timeseries_ids=fitting_ts, 
-                                    years='all',
-                                    loss_function = loss_function,
-                                    fitting_params=de_fitting_params, 
-                                    chunks_per_job=chunks_per_job)
-            
           
             # A unique  identifier for this model within the cross-validation.
             # The fitting set appended with the timeseries used to fit
             fitting_set_id = fitting_set + '-' + '_'.join([str(t) for t in fitting_ts])
             
-            fitted_model.update_metadata(model_evaluated = model_file)
-            fitted_model.update_metadata(timeseries_used = ','.join([str(t) for t in fitting_ts]))
-            fitted_model.update_metadata(fitting_set =  fitting_set_id)
-            fitted_model.update_metadata(left_out_timeseries = left_out_ts)
+            try:
+                fitted_model = dask_fit(client=dask_client, 
+                                        model_name='PhenoGrass', 
+                                        model_params = initial_params_to_use,
+                                        timeseries_ids=fitting_ts, 
+                                        years='all',
+                                        loss_function = loss_function,
+                                        fitting_params=de_fitting_params, 
+                                        chunks_per_job=chunks_per_job)
+            
+                fitted_model.update_metadata(model_evaluated = model_file)
+                fitted_model.update_metadata(timeseries_used = ','.join([str(t) for t in fitting_ts]))
+                fitted_model.update_metadata(fitting_set =  fitting_set_id)
+                fitted_model.update_metadata(left_out_timeseries = left_out_ts)
 
-            all_fitted_models.append(fitted_model)
+                all_fitted_models.append(fitted_model)
+
+            except:
+                print('failed on {f} with left out timeseries {t}'.format(f=fitting_set_id,t=left_out_ts))
+                failed_fits.append({'fitting_set_id':fitting_set_id,'left_out_ts':left_out_ts})
+            
 
             # Get around the 2 day limit on the short partition by just restarting the workers every now and then
             fitting_model_i += 1
@@ -162,4 +168,8 @@ if __name__=='__main__':
         
     # compile all the models into a set and save
     model_set = load_models.make_model_set(all_fitted_models,  note=model_fitting_note)
+    model_set['failed_fits']=failed_fits
     load_models.save_model_set(model_set)
+    print('finished')
+    print('{n} failed fits'.format(n=len(failed_fits)))
+    print(failed_fits)
