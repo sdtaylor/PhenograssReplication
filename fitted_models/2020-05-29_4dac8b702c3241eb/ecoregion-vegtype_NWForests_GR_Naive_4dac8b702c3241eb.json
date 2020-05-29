@@ -1,0 +1,23 @@
+{
+    "model_name": "Naive",
+    "parameters": {
+        "b1": 0.14347022933149844,
+        "b2": 0.0003689560680228965,
+        "L": 59.19430143545036
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.7013264606317938,
+                "nfev": 39600,
+                "nit": 65,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "ecoregion-vegtype_NWForests_GR",
+        "timeseries_used": "1,11,17,18,57,58,59"
+    }
+}

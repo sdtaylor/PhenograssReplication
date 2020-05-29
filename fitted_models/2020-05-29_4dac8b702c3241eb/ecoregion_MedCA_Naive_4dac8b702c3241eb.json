@@ -1,0 +1,23 @@
+{
+    "model_name": "Naive",
+    "parameters": {
+        "b1": 0.11561473968156832,
+        "b2": 0.0009657381133862941,
+        "L": 59.29077190704402
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.6038558227949166,
+                "nfev": 46200,
+                "nit": 76,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "ecoregion_MedCA",
+        "timeseries_used": "37,75,99,101,109"
+    }
+}
