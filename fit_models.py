@@ -17,10 +17,10 @@ import dask
 ###############################################
 
 #models_to_fit = ['Naive','CholerPR1','CholerPR2','CholerPR3','PhenoGrassNDVI']
-models_to_fit = ['Naive','NaiveMAPCorrected']
+models_to_fit = ['PhenoGrass','Naive']
 loss_function = 'mean_cvmae'
 
-model_fitting_note = 'test run'
+model_fitting_note = 'actually incorporated more sites from April and increase maxiter to 10000, trying with checkpoints to diagnose crashing/hanging'
 
 fitting_sets = pd.read_csv('model_fitting_set_info/fitting_sets.csv')
 fitting_set_assignments = pd.read_csv('model_fitting_set_info/fitting_set_assignments.csv')
@@ -29,8 +29,8 @@ fitting_set_assignments = pd.read_csv('model_fitting_set_info/fitting_set_assign
 # Dask/ceres stuff
 chunks_per_job = 20
 parameters_count = 8 # phenograss parameters since its the most intensive. 
-de_popsize     = 4
-de_maxiter     = 2
+de_popsize     = 200
+de_maxiter     = 10000
 
 use_default_workers = False
 default_workers = 100
@@ -48,9 +48,9 @@ else:
     print('Calculating optimal number of workers: ' + eq)
 
 ceres_cores_per_worker = 1 # number of cores per job
-ceres_mem_per_worker   = '2GB' # memory for each job
-ceres_worker_walltime  = '48:00:00' # the walltime for each worker, HH:MM:SS
-ceres_partition        = 'short'    # short: 48 hours, 55 nodes
+ceres_mem_per_worker   = '1GB' # memory for each job
+ceres_worker_walltime  = '120:00:00' # the walltime for each worker, HH:MM:SS
+ceres_partition        = 'medium'    # short: 48 hours, 55 nodes
                                     # medium: 7 days, 25 nodes
                                     # long:  21 days, 15 nodes
 
@@ -188,7 +188,16 @@ if __name__=='__main__':
             # The delayed wrapper and the use of the model future lets it be run across all the dask distributed nodes. 
             @delayed
             def minimize_me(scipy_parameter_sets):
-                return [model_future.result()._scipy_error(param_set) for param_set in scipy_parameter_sets]
+                #return [model_future.result()._scipy_error(param_set) for param_set in scipy_parameter_sets]
+                scores=[]
+                for param_set in scipy_parameter_sets:
+                    try:
+                        scores.append(model_future.result()._scipy_error(param_set))
+                    except:
+                        print('error with param set')
+                        print(param_set)
+                        scores.append(np.inf)
+                return scores
 
             # This kicks off all the parallel work
             scipy_output =  optimize.differential_evolution(minimize_me, bounds=scipy_bounds, **de_fitting_params)
@@ -208,6 +217,11 @@ if __name__=='__main__':
             local_model.update_metadata(timeseries_used = ','.join([str(t) for t in this_set_timeseries]))
 
             fit_models.append(local_model)
+
+        # write checkpoints in case things crash 2 days in 
+        temp_note = 'checkpoint fitting set {i}/{n} - {s}'.format(i=fitting_set_i, n=total_sets, s=this_fitting_set)
+        temp_model_set = load_models.make_model_set(fit_models,  note=temp_note)
+        load_models.save_model_set(temp_model_set)
     
     
     # compile all the models into a set and save
