@@ -14,7 +14,7 @@ phenocam_info = pd.read_csv('site_list.csv')
 phenocam_info = phenocam_info[phenocam_info.has_processed_data]
 ######################################################
 # fitted models to apply
-model_set_id = 'a1054eaebec346fb'
+model_set_id = '4dac8b702c3241eb'
 model_set = load_models.load_model_set(model_set_id)
 
 fitted_models = [{'model':m,'model_name':n,'fitting_years':'20012009'} for m,n in zip(model_set['models'],model_set['model_names'])]
@@ -59,4 +59,4 @@ for fit_model in fitted_models:
     
     all_data = all_data.append(all_variables)
 
-all_data.to_csv('data/full_model_precitions.csv', index=False)
+all_data.to_csv('data/full_model_predictions.csv', index=False)

@@ -25,11 +25,9 @@ of the models.
 
 ###############################################
 
-models_to_validate = {'NWForests_GR'    : "ecoregion-vegtype_NWForests_GR_PhenoGrass_3dbda2708f4f44f2.json",
-                      'ETempForests_GR' : "ecoregion-vegtype_ETempForests_GR_PhenoGrass_3dbda2708f4f44f2.json",
-                      'GrPlains_GR'     : "ecoregion-vegtype_GrPlains_GR_PhenoGrass_3dbda2708f4f44f2.json",
-                      'NADeserts_GR'    : "ecoregion-vegtype_NADeserts_GR_PhenoGrass_3dbda2708f4f44f2.json"}
-model_folder = 'fitted_models/2020-04-12_3dbda2708f4f44f2/'
+models_to_validate = {'ETempForests_GR' : "ecoregion-vegtype_ETempForests_GR_PhenoGrass_4dac8b702c3241eb.json",
+                      'GrPlains_GR'     : "ecoregion-vegtype_GrPlains_GR_PhenoGrass_4dac8b702c3241eb.json"}
+model_folder = 'fitted_models/2020-05-29_4dac8b702c3241eb/'
 
 model_fitting_note = 'first go at leave 1 out CV with the 4 GR models'
 
