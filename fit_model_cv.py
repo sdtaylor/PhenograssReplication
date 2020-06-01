@@ -18,7 +18,7 @@ import dask
 
 
 """
-This does leave 1-out cross validation for a small subset
+This fits everything for leave 1-out cross validation for a small subset
 of the models.
 
 """
