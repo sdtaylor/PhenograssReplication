@@ -100,15 +100,15 @@ class ClusterWrapper():
 #
 #    1. The workers each load their own copy of the same dataset to fit on. This
 #       is then accessed via a dask.future object
-#    2. A loss function is setup which incorporates the dask.future object. The
-#       loss function is passed as the func arg to optimize.differential_evolution
-#    3. A map function is setup which is passed to optimize.differential_evolution
+#    2. A minimization function is setup which incorporates the dask.future object. The
+#       minimization function is passed as the func arg to optimize.differential_evolution
+#    3. A a worker map function is setup which is passed to optimize.differential_evolution
 #       and accepts a list of parameter sets to evaluate. The map function submits
 #       this to the dask scheduler, and on completion, returns a list of loss
 #       values to optimize.differential_evolution.
 #
-#   The only thing that should be called directly here  be dask_fit(), which 
-#   returns a fitted model object with some  included metadata
+#   The only thing that should be called directly here is dask_fit(), which 
+#   returns a fitted model object with some included metadata
 def load_model_on_worker(model_name, param_ranges, loss_function, timeseries_ids, years):
     """
     This is designed to be passed as a future using dask.client.submit
@@ -161,7 +161,20 @@ def dask_fit(client,
              model_params,
              loss_function,
              chunks_per_job):
-    
+    """
+    client - a dask client
+    model_name - str - GrasslandModels name to fit ot
+    timeseries_ids - list of ints, timeseries ids from site_list.csv to fit on
+    years          - list of ints or 'all', which years to fit on
+    fitting_params - scipy.optimize.differential_evolution arguments
+    model_params   - GrasslandModels parameter ranges
+    loss_function  - str specififying loss func to use ('rmse','mean_cvmae')
+    chunks_per_job - each differential_evolution iteration issues X sets of parameters to test,
+                     which will be broken into a chunk_size specified here before sending to 
+                     workers to evaluate. This is more efficient than each worker getting 1 job
+                     at a time.
+
+    """
     def scipy_map(func, iterable):
         # map function to pass into differential evolution as 'workers' arg
         # The func arg here is actually self.minimize_me being passed by scipy.optimize =D
@@ -172,6 +185,7 @@ def dask_fit(client,
         futures =  client.compute(results)
         return list(toolz.concat([f.result() for f in futures]))
 
+    # mapping function passed to the differential evolution 'workers' argument
     fitting_params['workers'] = scipy_map
     
     model_future = setup_workers(client=client, 
