@@ -7,9 +7,11 @@ fitting_set_assignments = read_csv('model_fitting_set_info/fitting_set_assignmen
 ecoregion_codes = read_csv('model_fitting_set_info/ecoregion_codes.csv')
 site_info = read_csv('site_list.csv') %>%
   left_join(ecoregion_codes, by='ecoregion') %>%
-  select(timeseries_id, phenocam_name, roi_type, ecoregion_desc)
+  select(timeseries_id, phenocam_name, roi_type, ecoregion_desc)  %>%
+  mutate(phenocam_name = str_remove(phenocam_name, 'DP1.00033')) %>% # Shorten those long neon names
+  mutate(phenocam_name = str_remove(phenocam_name, 'DP1.20002'))
 
-all_predictions = read_csv('data/full_model_precitions.csv', 
+all_predictions = read_csv('data/full_model_predictions.csv', 
                            col_types = cols(W=col_number(),
                                             gcc_observed = col_number(),
                                             Dt=col_number()))
@@ -24,10 +26,10 @@ all_predictions = all_predictions %>%
 all_predictions = all_predictions %>%
   left_join(site_info, by='timeseries_id')
 
-figure_start_date = '2015-01-01'
-figure_end_date   = '2020-01-01'
+figure_start_date = '2012-01-01'
+figure_end_date   = '2018-01-01'
 
-select_sites = c('ibp','ahwahnee','kansas','NEON.D15.ONAQ.DP1.00033','lethbridge','mead1','butte','cperagm','tonzi')
+# select_sites = c('ibp','ahwahnee','kansas','NEON.D15.ONAQ.DP1.00033','lethbridge','mead1','butte','cperagm','tonzi')
 
 site_level_model_predictions_figure = all_predictions %>%
   filter(model == 'PhenoGrass') %>%
@@ -36,11 +38,10 @@ site_level_model_predictions_figure = all_predictions %>%
   mutate(precip = precip/100) %>%
   mutate(facet_label = paste0(phenocam_name,' - ',roi_type)) %>%
 ggplot(aes(x=date)) +
-  #geom_col(aes(y=precip), color='blue', alpha=0.4) + 
   geom_line(aes(y=gcc_predicted, color=fitting_set)) +
   geom_line(aes(y=gcc_observed), color='black') + 
   coord_cartesian(ylim=c(0,1)) + 
-  theme_bw(20) + 
+  theme_bw(15) + 
   facet_wrap(~facet_label, ncol=5)
 
 ggsave(plot = site_level_model_predictions_figure, filename = 'results/site_level_predictions.png', 

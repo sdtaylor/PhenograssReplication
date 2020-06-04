@@ -1,30 +1,10 @@
 library(tidyverse)
 
-all_predictions = read_csv('data/full_model_precitions.csv', 
+all_predictions = read_csv('data/full_model_predictions.csv', 
                            col_types = cols(W=col_number(),
                                             gcc_observed = col_number(),
                                             Dt=col_number()))
 
-# Setup a timeseries level climatology model as
-# a naive model.
-# # minimum 3 years for each day.
-# phenocam_data = read_csv('data/processed_phenocam_data.csv') 
-# 
-# naive_model = phenocam_data %>%
-#   group_by(timeseries_id, doy) %>%
-#   summarise(gcc_predicted = mean(gcc, na.rm=T),
-#             n=n()) %>%
-#   ungroup() 
-# 
-# # Minimum 3 years of data
-# # and only keep those timeseries which have actual phenograss predicitons
-# naive_model = naive_model %>%
-#   filter(n>=3) %>%
-#   filter(timeseries_id %in% unique(all_predictions$timeseries_id))
-# 
-# naive_model %>%
-#   count(timeseries_id) %>%
-#   View()
 
 errors = all_predictions %>%
   group_by(fitting_set, model, timeseries_id) %>%
@@ -42,7 +22,7 @@ fitting_set_assignments = read_csv('model_fitting_set_info/fitting_set_assignmen
 #######################################
 # Calculate summary errors at the landcover/ecoregion scale for the main result table
 # calculate site level errors for every tower/roi for a supplement table
-site_level_errors = FALSE
+site_level_errors = TRUE
 if(site_level_errors){
   error_grouping = c('fitting_set', 'model', 'timeseries_id')
 } else {
@@ -166,7 +146,9 @@ if(site_level_errors) {
   ecoregion_codes = read_csv('model_fitting_set_info/ecoregion_codes.csv')
   site_info = read_csv('site_list.csv') %>%
     left_join(ecoregion_codes, by='ecoregion') %>%
-    select(timeseries_id, phenocam_name, roi_type, ecoregion_desc)
+    select(timeseries_id, phenocam_name, roi_type, ecoregion_desc) %>%
+    mutate(phenocam_name = str_remove(phenocam_name, 'DP1.00033')) %>% # Shorten those long neon names
+    mutate(phenocam_name = str_remove(phenocam_name, 'DP1.20002'))
   
   summarised_errors %>%
     filter(model=='PhenoGrass') %>%
