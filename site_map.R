@@ -67,4 +67,4 @@ site_map = ggplot() +
   labs(color ='Vegetation\nType', shape='Vegetation\nType') +
   guides(fill='none')
 
-ggsave('manuscript/figs/fig2_map.png', width=30, height=20, units='cm', dpi=150)
+ggsave('manuscript/figs/fig1_map.png', width=30, height=20, units='cm', dpi=150)
