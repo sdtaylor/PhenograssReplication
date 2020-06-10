@@ -32,6 +32,10 @@ error_table = primary_errors %>%
   left_join(error_table_order, by=c('prediction_set'='model_fitting_sets')) %>%
   arrange(row_order) %>%
   mutate(row_label = cell_spec(row_label, 'latex', bold=(row_order %in% cell_type_1))) %>%
+   mutate(allsites = cell_spec(allsites, 'latex', bold=(allsites>=0.65))) %>%
+   mutate(ecoregion = cell_spec(ecoregion, 'latex', bold=(ecoregion>=0.65))) %>%
+   mutate(`ecoregion-vegtype` = cell_spec(`ecoregion-vegtype`, 'latex', bold=(`ecoregion-vegtype`>=0.65))) %>%
+   mutate(vegtype = cell_spec(vegtype, 'latex', bold=(vegtype>=0.65))) %>%
   select(row_label, allsites, ecoregion, vegtype,  `ecoregion-vegtype`)
   
 # TODO: need cv errors in here for the 2 grassland models
