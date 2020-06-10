@@ -40,16 +40,12 @@ copyrightstatement: |
 availability:
   codedata: |
     All code and data used in the analysis is available in the repository at https://github.com/sdtaylor/PhenograssReplication, the PhenoGrass model is implemented in a python package https://github.com/sdtaylor/GrasslandModels. Both are archived permanently on Zenodo (link).
-  sample: |
-    use this section when having geoscientific samples available
 authorcontribution: |
   Shawn concieved of the project. Shawn and Dawn wrote the paper.
-disclaimer: |
-  None
 acknowledgements: |
   None
 appendix: |
- TODO
+  Appendix: TODO
 output:
   rticles::copernicus_article: default
   bookdown::pdf_book:
@@ -60,7 +56,7 @@ output:
 
 Grassland systems span nearly 30% of the global land surface [@adams1990] and play a prominent role in terrestrial carbon cycles [@parton2012]. Grasslands in North America provide a large proportion of food and fiber agricultural products for the region. Annual productivity of grasslands in central and western North America is driven in large part by precipitation [@sala2012]. Future changes in the amount, intensity, and timing of precipitation will be heterogeneous across North America [@easterling2017], resulting in heterogeneous changes to grassland productivity. For example, even with consistent shifts in climate, different locations can experience different changes in productivity due to local-scale responses [@zhang2011;@sala2012;@knapp2017]. This highlights the need for models which can be resolved at small spatial and temporal scales, thus making long-term grassland productivity forecasts as informative as possible.
 
-There are several potential limitations in the underlying productivity models which can drive such a forecast. Process-based models parameterized with observed data have limited transferability beyond the spatial extent from which their training data came [taylor2019]. For any location the most accurate model will be one which was parameterized from locally collected data, yet these site-specific models will not generalize to new locations [@basler2016]. Incorporating more, and diverse, locations into the model building process will allow it to be more generalizable, yet this comes at a cost of decreased proficiency at all locations [@garcia-mozo2008; @basler2016]. Thus there is an optimal extent in the building and subsequent application of productivity models, which depends on a tradeoff between proficiency at the local scale and applicability at the larger scale.
+There are several potential limitations in the underlying productivity models which can drive such a forecast. Process-based models parameterized with observed data have limited transferability beyond the spatial extent from which their training data came [@taylor2019a]. For any location the most accurate model will be one which was parameterized from locally collected data, yet these site-specific models will not generalize to new locations [@basler2016]. Incorporating more, and diverse, locations into the model building process will allow it to be more generalizable, yet this comes at a cost of decreased proficiency at all locations [@garcia-mozo2008; @basler2016]. Thus there is an optimal extent in the building and subsequent application of productivity models, which depends on a tradeoff between proficiency at the local scale and applicability at the larger scale.
 
 Here we evaluate a productivity model with the intention of it driving long-term forecasts. The PhenoGrass model developed by @hufkens2016 is a pulse-response productivity model with temperature and precipitation as the primary drivers. The model is parameterized using observations from the Phenocam network, which have a small resolution  (footprints of < 1ha), sub-daily sampling and sites across all major biomes. These attributes make the PhenoGrass model potentially widely applicable. We expand on the evaluation of the original study by using 445 additional site-years of data from 77 new sites. We test the model’s performance across varying combinations of North American ecoregions and vegetation types to find an optimal spatial extent and/or ecoregion for which to parameterize and apply the model. Finally we address where the model performs poorly and how productivity forecasts for these areas could be implemented or improved.
 
@@ -108,7 +104,7 @@ Agriculture and shrubland sites were poorly modelled at all extents. The highest
 
 \begin{table}
 \caption{Average site-level coefficient of determination (R\textsuperscript{2}) for each vegetation type and ecoregion group parameterized model applied to its respective extent as well as appropriate smaller extents. Bold indicates when a R\textsuperscript{2} was greater than the “acceptable” threshold of 0.65. Values in parentheses represent the average R\textsuperscript{2} in leave-1-out cross validation.}
-\begin{tabular}{l|r|r|r|r}
+\begin{tabular}{l|l|l|l|l}
 \hline
  & All Site Model & Ecoregion Model & Vegetation Model & Ecoregion+Vegetation Model\\
 \hline
@@ -118,13 +114,13 @@ All Sites & 0.33 &  &  & \\
 \hline
 \hspace{1em}Agriculture & 0.34 & 0.39 & 0.38 & 0.33\\
 \hline
-\hspace{1em}Grasslands & 0.73 & 0.79 & 0.65 & 0.82\\
+\hspace{1em}Grasslands & \textbf{0.73} & \textbf{0.79} & \textbf{0.65} & \textbf{0.82 (0.78)}\\
 \hline
 \textbf{Great Plains} & 0.45 & 0.45 &  & \\
 \hline
 \hspace{1em}Agriculture & 0.22 & 0.15 & 0.17 & 0.18\\
 \hline
-\hspace{1em}Grasslands & 0.64 & 0.70 & 0.67 & 0.70\\
+\hspace{1em}Grasslands & 0.64 & \textbf{0.70} & \textbf{0.67} & \textbf{0.70 (0.67)}\\
 \hline
 \textbf{N. American Deserts} & -0.11 & 0.14 &  & \\
 \hline
@@ -149,9 +145,9 @@ All Sites & 0.33 &  &  & \\
 
 We performed an extensive evaluation of the PhenoGrass model across ecoregions and vegetation types to determine the best extent at which to parameterize and apply the model. We found the model most suitable to grassland vegetation when constrained to the ecoregion level, though it did not perform well in grasslands in the North American desert ecoregion. Shrublands and agriculture were not well represented by the model regardless of the extent. Results from this study will facilitate long-term forecasts of grassland productivity constrained to an appropriate vegetation type and extent. 
 
-The PhenoGrass model performed best in grassland sites embedded within ecoregions. Studies using earlier forms of the model applied it exclusively to grasslands [@choler2010, @choler2011, @hufkens2016], and results here confirm that it performs well in grassland vegetation with two exceptions. The model did not work in the desert grasslands, nor did it generalize well when built using all North American grasslands simultaneously. Grasslands in the N.A. Desert biome coexist with shrubs, resulting in complex water usage dynamics described in more detail below. The pulse-response design of PhenoGrass, which makes it well suited in areas with high cover of perennial grass, is likely not applicable when grasses are interspersed with woody plants. 
+The PhenoGrass model performed best in grassland sites embedded within ecoregions. Studies using earlier forms of the model applied it exclusively to grasslands [@choler2010; @choler2011; @hufkens2016], and results here confirm that it performs well in grassland vegetation with two exceptions. The model did not work in the desert grasslands, nor did it generalize well when built using all North American grasslands simultaneously. Grasslands in the N.A. Desert biome coexist with shrubs, resulting in complex water usage dynamics described in more detail below. The pulse-response design of PhenoGrass, which makes it well suited in areas with high cover of perennial grass, is likely not applicable when grasses are interspersed with woody plants. 
 
-Shrublands were not well modelled at any extent. Dryland shrubs, representing 8 of the 15 shrubland Phenocams analysed here, coexist with grasses by accessing different pools of soil water [@weltzin2000; @muldavin2008], thus have different responses to precipitation and resulting greenness patterns [@browning2017; @yan2019]. A prior form of the PhenoGrass model was designed to work with dryland shrubs [@ogle2004], yet here PhenoGrass showed little effectiveness. The current model form has only a single soil water pool with fluxes from precipitation and evapotranspiration, thus is not well-suited for representing the deeper water pools which shrubs use. Potential improvements would likely need to incorporate a deep soil water pool, in addition to the shallow, which are each utilized by the respective plant functional groups. This has already been implemented in highly parameterized ecohydrology models [cites] and could potentially be used here to make a more generalized PhenoShrub model to apply across large scales. This approach could also help in modelling N.A. Desert grasslands which coexist among shrubs. 
+Shrublands were not well modelled at any extent. Dryland shrubs, representing 8 of the 15 shrubland Phenocams analysed here, coexist with grasses by accessing different pools of soil water [@weltzin2000; @muldavin2008], thus have different responses to precipitation and resulting greenness patterns [@browning2017; @yan2019]. A prior form of the PhenoGrass model was designed to work with dryland shrubs [@ogle2004], yet here PhenoGrass showed little effectiveness. The current model form has only a single soil water pool with fluxes from precipitation and evapotranspiration, thus is not well-suited for representing the deeper water pools which shrubs use. Potential improvements would likely need to incorporate a deep soil water pool, in addition to the shallow, which are each utilized by the respective plant functional groups. This has already been implemented in highly parameterized ecohydrology models [@scanlon2005;@lauenroth2014] and could potentially be used here to make a more generalized PhenoShrub model to apply across large scales. This approach could also help in modelling N.A. Desert grasslands which coexist among shrubs. 
 
 Agriculture areas performed poorly with the PhenoGrass model. Management practices of crops artificially increase productivity beyond what would naturally occur, and planting and harvest result in abrupt changes in greenness metrics [@begue2018]. While the results here are unsurprising, to our knowledge this is the first attempt to use near-surface images to drive an agricultural productivity model. We have shown that the PhenoGrass model, designed for natural systems, does not generalize to managed agriculture crops. Future work in using Phenocam data to model agricultural productivity would likely need to incorporate crop specific parameters and management activity, which other cropland modelling systems use [@fritz2019]. The integration of the Phenocam network within the Long-Term Agricultural Research (LTAR) will likely be beneficial for this, as the timing and intensity of management activities or experimental treatments can be incorporated into modelling efforts. 
 
