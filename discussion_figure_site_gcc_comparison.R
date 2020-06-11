@@ -10,7 +10,7 @@ hufkin_sites = read_csv('hufkins2016_sites.csv')
 
 site_status = phenocam_sites %>%
   mutate(site_grouping = case_when(
-    phenocam_name %in% hufkin_sites$phenocam_name ~ 'A. Hufkins et al. 2016 Sites',
+    phenocam_name %in% hufkin_sites$phenocam_name ~ 'A. Hufkens et al. 2016 Sites',
     TRUE ~ 'B. Additional Grassland Sites in Current Study')) %>% 
   select(phenocam_name, site_grouping, ecoregion)
 
