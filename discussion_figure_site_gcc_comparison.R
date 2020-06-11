@@ -29,7 +29,7 @@ discusion_figure = ggplot(grassland_gcc, aes(x=doy, y=gcc, color=as.factor(times
   theme_bw(25) +
   theme(legend.position = 'none',
         strip.background = element_blank(),
-        strip.text = element_text(hjust = 0)) +
+        strip.text = element_text(hjust = 0,size=16)) +
   labs(x='Day of Year', y='Avg. GCC')
 
 ggsave('manuscript/figs/fig3_discussion_avg_site_gcc.png', plot=discusion_figure, height = 15, width=30, units = 'cm', dpi=200)  
