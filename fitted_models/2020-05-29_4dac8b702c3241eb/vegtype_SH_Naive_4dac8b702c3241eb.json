@@ -1,0 +1,23 @@
+{
+    "model_name": "Naive",
+    "parameters": {
+        "b1": 0.17038813191028623,
+        "b2": 0.0015469323049330796,
+        "L": 59.96165238198353
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.5472059401484272,
+                "nfev": 46200,
+                "nit": 76,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "vegtype_SH",
+        "timeseries_used": "10,21,30,33,34,35,37,45,48,70,73,75,78,92,98"
+    }
+}

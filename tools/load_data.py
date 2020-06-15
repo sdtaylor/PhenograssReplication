@@ -25,7 +25,11 @@ def marry_array_with_metadata(a, timeseries_id_columns, date_rows, new_variable_
     df = pd.DataFrame(a,index = date_rows, columns=timeseries_id_columns).reset_index()
     return df.melt(id_vars='date', value_name = new_variable_colname)
 
-def get_processed_phenocam_data(years = range(2010,2019), timeseries_ids = 'all', predictor_lag = 5):
+def get_processed_phenocam_data(years = range(2010,2019), 
+                                timeseries_ids = 'all', 
+                                predictor_lag = 5,
+                                min_year_check = 3,
+                                max_year_check = 8):
     """
     Load Phenocam GCC and associated predictor data (daymet precip & temp, 
     ET, daylength, soil)
@@ -93,8 +97,8 @@ def get_processed_phenocam_data(years = range(2010,2019), timeseries_ids = 'all'
     assert np.isin(predictor_years,daymet_data.year.unique()).all(), 'not all predictor years in daymet data'
     assert np.all(phenocam_data.groupby(['phenocam_name','roi_type','roi_id']).count().doy.unique() >= 365), 'phenocam data has some timeseries_ids with < 365 daily entries'
     assert np.isin(phenocam_data.year.unique(), years).all(), 'extra years in phenocam data'
-    assert phenocam_data.groupby('timeseries_id').year.nunique().unique().min() >= 3, 'some phenocam timeseries with < 3 years'
-    assert phenocam_data.groupby('timeseries_id').year.nunique().unique().max() < 8, 'some phenocam timeseries with >=8 years'
+    assert phenocam_data.groupby('timeseries_id').year.nunique().unique().min() >= min_year_check, 'some phenocam timeseries with < {y} years'.format(y=min_year_check)
+    assert phenocam_data.groupby('timeseries_id').year.nunique().unique().max() <  max_year_check, 'some phenocam timeseries with >={y} years'.format(y=max_year_check)
      
     assert np.isin(daymet_data.phenocam_name.unique(), selected_phenocam_names).all(), 'daymet data has some missing phenocams'
     assert np.isin(selected_phenocam_names,daymet_data.phenocam_name.unique()).all(), 'daymet data has some extra phenocams'

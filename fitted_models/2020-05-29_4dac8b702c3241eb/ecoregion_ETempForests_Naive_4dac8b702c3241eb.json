@@ -1,0 +1,23 @@
+{
+    "model_name": "Naive",
+    "parameters": {
+        "b1": 0.05274615218907286,
+        "b2": 0.001015454942411509,
+        "L": 59.179188654395396
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.666599502296055,
+                "nfev": 50400,
+                "nit": 83,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "ecoregion_ETempForests",
+        "timeseries_used": "2,3,4,5,6,9,25,26,27,38,39,40,41,42,43,51,60,80,95,96,100,103,104,105,106,108"
+    }
+}
