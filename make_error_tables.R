@@ -53,7 +53,8 @@ site_table_column_names = c('Ecoregion','Veg Type','Site','All Site Model','Ecor
 
 site_error_table = site_errors %>%
   select(ecoregion_desc, veg_type = roi_type, phenocam_name, allsites, ecoregion, `ecoregion-vegtype`, vegtype) %>%
-  sample_n(20)
+   arrange(ecoregion_desc, veg_type)
 
 kable(site_error_table, 'latex', col.names = site_table_column_names, escape = F) %>%
-  column_spec(1, width = '40em')
+  column_spec(1, width = '10em') %>%
+   column_spec(6, width='10em')
