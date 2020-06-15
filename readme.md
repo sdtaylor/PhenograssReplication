@@ -14,7 +14,7 @@ The following R scripts, run in order, will generate all the appropriate data us
 `data_prep/download_phenocam_data.R` - download the raw phenocam data to `data/phenocam/`  
 `data_prep/download_daymet_values.R` - download daymet climate data for each site to `daymet_data.csv`  
 `data_prep/process_phenocam_data.R ` - preprocess the downloaded phenocam data to the file `data/processed_phenocam_data.csv`  
-`data_prep/process_soil_values.R`   - extract the soil variables from the  rasters in `data/soil_rasters`, with results going in to `site_list.csv`__
+`data_prep/process_soil_values.R`   - extract the soil variables from the  rasters in `data/soil_rasters`, with results going in to `site_list.csv`  
 
 
 ### Model fitting and predictions
@@ -24,10 +24,10 @@ The files populate the `results` folder from which the analysis scripts read fro
 Note the fitting procedures are designed to run on an HPC using the python library dask.  
 The actual PhenoGrass code is in the python package GrasslandModels located at https://github.com/sdtaylor/GrasslandModels
 
-`fit_model.py`
-`fit_model_cv.py`
-`apply_models.py`
-`apply_model_cv.py`
+`fit_model.py`  
+`fit_model_cv.py`  
+`apply_models.py`  
+`apply_model_cv.py`  
 
 The following files are used by the above script to fascilitate data loading, saving/loading fitted models, and fitting models on a dask.distributed cluster.
 
@@ -37,7 +37,7 @@ The following files are used by the above script to fascilitate data loading, sa
 
 ### Model analysis. 
 
-`analysis/analyze_errors.R`  - This generates the primary error table in the manuscript, as well as a site level error table in `results`
+`analysis/analyze_errors.R`  - This generates the primary error table in the manuscript, as well as a site level error table in `results`  
 `analysis/analyze_cv_errors.R` - This genates the CV errors  
 `analysis/discussion_figure_site_gcc_comparison.R` - This generates the discussion figure of smoothed Grassland GCC  
 `analysis/make_error_tables.R` - Make latex error tables for the manuscript  
