@@ -43,3 +43,4 @@ The following files are used by the above script to fascilitate data loading, sa
 `analysis/make_error_tables.R` - Make latex error tables for the manuscript  
 `analysis/site_level_model_output_figure.R` - Make a large figure showing predictions and actuall GCC for every site  
 `analysis/site_map.R` - create the map in the manuscript  
+`analysis/site_table.R` - create the site table in the manuscript appendix  
