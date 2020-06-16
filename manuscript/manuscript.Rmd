@@ -39,7 +39,7 @@ copyrightstatement: |
 ### It is strongly recommended to make use of these sections in case data sets and/or software code have been part of your research the article is based on.
 availability:
   codedata: |
-    All code and data used in the analysis is available in the repository at https://github.com/sdtaylor/PhenograssReplication, the PhenoGrass model is implemented in a python package https://github.com/sdtaylor/GrasslandModels. Both are archived permanently on Zenodo (link).
+    All code and data used in the analysis is available in the repository at https://github.com/sdtaylor/PhenograssReplication, the PhenoGrass model is implemented in a python package https://github.com/sdtaylor/GrasslandModels. Both are archived permanently on Zenodo (https://doi.org/10.5281/zenodo.3897319).
 authorcontribution: |
   Shawn concieved of the project. Shawn and Dawn wrote the paper.
 acknowledgements: |
@@ -306,7 +306,7 @@ knitr::include_graphics("figs/fig2_scales.png")
 
 Third, models which exceed the threshold described above were subject to further evaluation. For each model we performed a leave one out cross-validation, where the model was re-fit with one Phenocam site not included in the training data, and then evaluated against the left out site. In this step a scaling coefficient to link mean annual precipitation with PhenoCam G\textsubscript{cc} was held constant at the value obtained in step two. The resulting coefficient of determination is the average among all modelled sites using their respective out of sample test.
 
-All phenocam data was downloaded using the phenocamr R package [@hufkens2018]. Other packages used in the R 3.6 language were dplyr [@dplyr], tidyr [@tidyr], ggplot2 [@ggplot2], daymetr [@hufkens2018], rgdal [@rgdal2019], and sf [@sf2018]. Python 3.7 packages included scipy [@scipy2020], numpy [@numpy2011], pandas [@pandas], and dask [@dask].  All code and data used in the analysis is available in the repository at https://github.com/sdtaylor/PhenograssReplication, the PhenoGrass model is implemented in a python package https://github.com/sdtaylor/GrasslandModels. Both are archived permanently on Zenodo (link).  
+All phenocam data was downloaded using the phenocamr R package [@hufkens2018]. Other packages used in the R 3.6 language were dplyr [@dplyr], tidyr [@tidyr], ggplot2 [@ggplot2], daymetr [@hufkens2018], rgdal [@rgdal2019], and sf [@sf2018]. Python 3.7 packages included scipy [@scipy2020], numpy [@numpy2011], pandas [@pandas], and dask [@dask].  All code and data used in the analysis is available in the repository at https://github.com/sdtaylor/PhenograssReplication, the PhenoGrass model is implemented in a python package https://github.com/sdtaylor/GrasslandModels. Both are archived permanently on Zenodo (https://doi.org/10.5281/zenodo.3897319).  
 
 # Results
 
