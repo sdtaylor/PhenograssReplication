@@ -35,6 +35,8 @@ The following files are used by the above script to fascilitate data loading, sa
 `tools/load_data.py`  
 `tools/load_models.py`
 
+The `fitted_models` folder contains saved model parameterizations from all model fits described in the paper. The first set of models are in `2020-05-29_4dac8b702c3241eb`, while the leave 1-out cross validation models are in `2020-06-01_c41f4f6a115d4c3a`. These are described with metadata in `fitted_models/model_sets.json`, and are designed to be accessed and iterated thru with the functions in `tools/load_models.py`.
+
 ### Model analysis. 
 
 `analysis/analyze_errors.R`  - This generates the primary error table in the manuscript, as well as a site level error table in `results`  
