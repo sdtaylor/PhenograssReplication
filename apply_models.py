@@ -35,19 +35,25 @@ for fit_model in fitted_models:
                                                                                      years='all',
                                                                                      predictor_lag=5)
     
+    scaling_factor  = predictor_data['MAP'] / (predictor_data['MAP'] + m.get_params()['h'])
+    fCover_observed = gcc_observed * scaling_factor
+    
     model_predictors = {p:predictor_data[p] for p in m.required_predictors()}
     model_output = m.predict(predictors = model_predictors, return_variables='all')
+    model_output['fCover_predicted'] = model_output.pop('fCover')    # rename
+    model_output['gcc_predicted'] = model_output.pop('V')
     
     # Each model outputs several state variabes, this creates a data.frame of the form
-    # pixel_id, date, ndvi_predicted, ndvi_observed, state_var1, state_var2, ....
-    predicted_df = marry_array_with_metadata(model_output.pop('V'), site_cols, date_rows, new_variable_colname='gcc_predicted')
-    observed_df  = marry_array_with_metadata(gcc_observed, site_cols, date_rows, new_variable_colname='gcc_observed')
-    all_variables = predicted_df.merge(observed_df, how='left', on=['date','timeseries_id'])
+    # pixel_id, date, gcc_predicted, gcc_observed, state_var1, state_var2, ....
+    gcc_observed_df  = marry_array_with_metadata(gcc_observed, site_cols, date_rows, new_variable_colname='gcc_observed')
+    fCover_observed_df =  marry_array_with_metadata(fCover_observed, site_cols, date_rows, new_variable_colname='fCover_observed')
     
+    all_variables = gcc_observed_df.merge(fCover_observed_df, how='left', on=['date','timeseries_id'])
+
     for variable_name, variable_array in model_output.items():
         variable_df = marry_array_with_metadata(variable_array, site_cols, date_rows, new_variable_colname=variable_name)
         all_variables = all_variables.merge(variable_df, how='left', on=['date','timeseries_id'] )
-    
+        
     precip_df = marry_array_with_metadata(predictor_data['precip'], site_cols, date_rows, new_variable_colname='precip')
     et_df = marry_array_with_metadata(predictor_data['evap'], site_cols, date_rows, new_variable_colname='et')
     all_variables = all_variables.merge(precip_df, how='left', on=['date','timeseries_id']).merge(et_df, how='left', on=['date','timeseries_id'])
