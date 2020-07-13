@@ -1,0 +1,25 @@
+{
+    "model_name": "Naive2MAPCorrected",
+    "parameters": {
+        "b1": -0.036737521482699265,
+        "b2": 0.00029782318113902306,
+        "b3": 0.0628147664789136,
+        "L": 32.00949403569669,
+        "h": 684.3298007596011
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.48713949988785493,
+                "nfev": 188000,
+                "nit": 187,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "ecoregion-vegtype_ETempForests_AG",
+        "timeseries_used": "2,3,4,5,6,25,26,27,38,39,40,41,42,43,51,96,100,103,104,106"
+    }
+}

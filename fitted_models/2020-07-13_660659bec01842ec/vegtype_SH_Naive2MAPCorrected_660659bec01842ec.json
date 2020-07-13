@@ -1,0 +1,25 @@
+{
+    "model_name": "Naive2MAPCorrected",
+    "parameters": {
+        "b1": -0.006418433873300877,
+        "b2": 0.0014519772774557183,
+        "b3": 0.03839652327337628,
+        "L": 59.27194232798322,
+        "h": 97.89324910846835
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.4673590383849136,
+                "nfev": 176000,
+                "nit": 175,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "vegtype_SH",
+        "timeseries_used": "10,21,30,33,34,35,37,45,48,70,73,75,78,92,98"
+    }
+}
