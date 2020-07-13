@@ -6,11 +6,6 @@ ecoregion-vegtype_GrPlains_AG,ecoregion-vegtype,13,54.300000000000004
 ecoregion-vegtype_GrPlains_GR,ecoregion-vegtype,15,71.5
 ecoregion-vegtype_NADeserts_GR,ecoregion-vegtype,5,20.3
 ecoregion-vegtype_NADeserts_SH,ecoregion-vegtype,8,39.7
-ecoregion_NWForests,ecoregion,9,60.1
-ecoregion_ETempForests,ecoregion,26,134.9
-ecoregion_GrPlains,ecoregion,29,140.2
-ecoregion_NADeserts,ecoregion,13,60
-ecoregion_MedCA,ecoregion,5,40.5
 vegtype_AG,vegtype,38,175.7
 vegtype_GR,vegtype,38,208.8
 vegtype_SH,vegtype,15,94.3
