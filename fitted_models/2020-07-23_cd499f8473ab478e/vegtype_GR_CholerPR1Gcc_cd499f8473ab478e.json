@@ -1,0 +1,25 @@
+{
+    "model_name": "CholerPR1Gcc",
+    "parameters": {
+        "b1": 0.016457219614466112,
+        "b2": 0.0019092609067170585,
+        "b3": 0.027456856157168197,
+        "L": 0.2819362616339447,
+        "h": 510.5647559612162
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.6123351054101411,
+                "nfev": 235000,
+                "nit": 234,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "vegtype_GR",
+        "timeseries_used": "1,9,11,13,14,15,17,18,28,31,32,36,44,46,47,52,57,58,59,60,62,63,64,65,67,68,69,71,74,77,80,95,97,99,105,107,108,109"
+    }
+}

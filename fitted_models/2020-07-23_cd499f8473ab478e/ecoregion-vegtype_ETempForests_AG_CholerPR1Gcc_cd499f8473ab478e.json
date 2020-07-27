@@ -1,0 +1,25 @@
+{
+    "model_name": "CholerPR1Gcc",
+    "parameters": {
+        "b1": 22.60809217717579,
+        "b2": 1.878683577189543,
+        "b3": 0.055070621647653084,
+        "L": 4.578050873935858,
+        "h": 72.248032919563
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.915684325334005,
+                "nfev": 7000,
+                "nit": 6,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "ecoregion-vegtype_ETempForests_AG",
+        "timeseries_used": "2,3,4,5,6,25,26,27,38,39,40,41,42,43,51,96,100,103,104,106"
+    }
+}

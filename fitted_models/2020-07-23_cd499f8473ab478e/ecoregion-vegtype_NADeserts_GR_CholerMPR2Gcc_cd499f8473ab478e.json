@@ -1,0 +1,25 @@
+{
+    "model_name": "CholerMPR2Gcc",
+    "parameters": {
+        "b2": 9.507711842715594e-06,
+        "b3": 0.0009468945494237602,
+        "b4": 198.79272612164462,
+        "L": 1.8367129811723029,
+        "h": 399.4321319209504
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.5027689633477929,
+                "nfev": 732000,
+                "nit": 731,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "fitting_set": "ecoregion-vegtype_NADeserts_GR",
+        "timeseries_used": "28,68,69,71,77"
+    }
+}
