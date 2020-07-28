@@ -24,6 +24,7 @@ timeseries_to_drop = tribble(
   'ufona',         'SH', '1000', # This has some very bad outliers. could potentially be dealth with
   'usgseros',      'GR', '2000', # the GR_1000 for this camera has ~3 years while 2000 has ~1
   'uiefmiscanthus','AG', '2000', # has only 2.5 years while ag_1000 has > 8
+  'jasperridge',   'GR', '2000', # mostly repeating gr_1000
   
   'spruceA0EMI',   'SH', '1000',  # This site is way over represented. I'm only keeping the
   'spruceA0EMT',   'SH', '1000',  # camera 'spruceT6P16E'
