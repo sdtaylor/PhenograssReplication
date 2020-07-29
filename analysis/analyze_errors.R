@@ -6,9 +6,6 @@ all_predictions = read_csv('data/full_model_predictions.csv',
                                             fCover_observed = col_number(),
                                             Dt=col_number()))
 
-all_predictions = all_predictions %>%
-  filter(model %in% c('PhenoGrass','NaiveMAPCorrected'))
-
 site_errors = all_predictions %>%
   group_by(fitting_set, model, timeseries_id) %>%
   summarise(rmse = sqrt(mean( (fCover_observed - fCover_predicted)^2 ,na.rm=T)),
