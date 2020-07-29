@@ -276,6 +276,28 @@
         "model_set_folder": "2020-07-23_cd499f8473ab478e/",
         "fit_datetime": "2020-07-23 02:04:40",
         "model_set_id": "cd499f8473ab478e",
-        "note": "checkpoint fitting set 8/11 - vegtype_GR"
+        "note": "checkpoint fitting set 8/11 - vegtype_GR. SH and allsites crashed here, so they're redone in the set below, along with GR"
+    },
+    {
+        "model_names": [
+            "PhenoGrass",
+            "NaiveMAPCorrected",
+            "PhenoGrass",
+            "NaiveMAPCorrected",
+            "PhenoGrass",
+            "NaiveMAPCorrected"
+        ],
+        "model_filenames": [
+            "vegtype_GR_PhenoGrass_0a82f11673e54a9c.json",
+            "vegtype_GR_NaiveMAPCorrected_0a82f11673e54a9c.json",
+            "vegtype_SH_PhenoGrass_0a82f11673e54a9c.json",
+            "vegtype_SH_NaiveMAPCorrected_0a82f11673e54a9c.json",
+            "allsites_PhenoGrass_0a82f11673e54a9c.json",
+            "allsites_NaiveMAPCorrected_0a82f11673e54a9c.json"
+        ],
+        "model_set_folder": "2020-07-29_0a82f11673e54a9c/",
+        "fit_datetime": "2020-07-29 01:03:20",
+        "model_set_id": "0a82f11673e54a9c",
+        "note": "redoing fitting with some potentiall important modifications. also throwing in naive and choler models made to work with gcc \n short run to redo GR,SH and allsites without pointreyes & jasperridge 2000"
     }
 ]
