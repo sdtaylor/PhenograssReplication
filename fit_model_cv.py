@@ -25,9 +25,10 @@ of the models.
 
 ###############################################
 
-models_to_validate = {'ETempForests_GR' : "ecoregion-vegtype_ETempForests_GR_PhenoGrass_4dac8b702c3241eb.json",
-                      'GrPlains_GR'     : "ecoregion-vegtype_GrPlains_GR_PhenoGrass_4dac8b702c3241eb.json"}
-model_folder = 'fitted_models/2020-05-29_4dac8b702c3241eb/'
+models_to_validate = {'ETempForests_GR' : "ecoregion-vegtype_ETempForests_GR_PhenoGrass_cd499f8473ab478e.json",
+                      'GrPlains_GR'     : "ecoregion-vegtype_GrPlains_GR_PhenoGrass_cd499f8473ab478e.json",
+                      'NWForests_GR'    : "ecoregion-vegtype_NWForests_GR_NaiveMAPCorrected_cd499f8473ab478e.json"}
+model_folder = 'fitted_models/2020-07-29_0a82f11673e54a9c/'
 
 model_fitting_note = 'first go at leave 1 out CV with the 4 GR models'
 
