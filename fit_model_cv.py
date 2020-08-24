@@ -30,7 +30,7 @@ models_to_validate = {'ETempForests_GR' : "ecoregion-vegtype_ETempForests_GR_Phe
                       'NWForests_GR'    : "ecoregion-vegtype_NWForests_GR_NaiveMAPCorrected_cd499f8473ab478e.json"}
 model_folder = 'fitted_models/2020-07-29_0a82f11673e54a9c/'
 
-model_fitting_note = 'first go at leave 1 out CV with the 4 GR models'
+model_fitting_note = 'CV model runs on the three GR models'
 
 
 ###############################################3
@@ -40,7 +40,7 @@ de_popsize     = 400
 de_maxiter     = 10000
 
 # Dask/ceres stuff
-chunks_per_job = 15
+chunks_per_job = 30
 parameters_count = 7 # phenograss parameters since its the most intensive. 
 
 use_default_workers = False
