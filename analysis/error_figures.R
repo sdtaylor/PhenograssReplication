@@ -17,11 +17,9 @@ phenocam_site_info = read_csv('site_list.csv') %>%
 get_label_stats = function(df){
   # This needs to accept a group_by() output
   df %>%
-  summarise(rmse = sqrt(mean( (fCover_observed - fCover_predicted)^2 ,na.rm=T)),
-            r2   = 1  - sum((fCover_observed - fCover_predicted)^2,na.rm=T) / sum((fCover_observed - mean(fCover_observed,na.rm=T))^2,na.rm=T),
-            #mae  = mean(abs(gcc_observed - gcc_predicted),na.rm=T),
-            n=n(),
-            n_timeseries = n_distinct(timeseries_id)) %>%
+    summarise(rmse = mean(rmse),
+              r2 =   mean(r2),
+              n_timeseries = n_distinct(timeseries_id)) %>%
     ungroup() %>%
     mutate(label_text = paste0('R2: ',round(r2,2),'\n','RMSE: ',round(rmse,2),'\n',n_timeseries,' sites'))
 }
@@ -40,6 +38,12 @@ allsite_veg_predictions = all_predictions %>%
 allsite_veg_predictions$fitting_set = factor(allsite_veg_predictions$fitting_set, levels = fitting_levels, labels = nice_labels)
 
 allsite_veg_predictions_error_text = allsite_veg_predictions %>%
+  group_by(fitting_set, timeseries_id) %>%
+  summarise(rmse = sqrt(mean( (fCover_observed - fCover_predicted)^2 ,na.rm=T)),
+            r2   = 1  - sum((fCover_observed - fCover_predicted)^2,na.rm=T) / sum((fCover_observed - mean(fCover_observed,na.rm=T))^2,na.rm=T),
+            n=n(),
+            percent_na=mean(is.na(fCover_observed))) %>%
+  ungroup() %>%
   group_by(fitting_set) %>%
   get_label_stats()
 
@@ -81,10 +85,14 @@ ecoregion_vegtype_predictions = ecoregion_vegtype_predictions %>%
   mutate(facet_label = paste(ecoregion_desc,vegtype,sep=' - '))
 
 ecoregion_vegtype_predictions_error_text = ecoregion_vegtype_predictions %>%
+  group_by(facet_label, timeseries_id) %>%
+  summarise(rmse = sqrt(mean( (fCover_observed - fCover_predicted)^2 ,na.rm=T)),
+            r2   = 1  - sum((fCover_observed - fCover_predicted)^2,na.rm=T) / sum((fCover_observed - mean(fCover_observed,na.rm=T))^2,na.rm=T),
+            n=n(),
+            percent_na=mean(is.na(fCover_observed))) %>%
+  ungroup() %>%
   group_by(facet_label) %>%
   get_label_stats()
-
-
 
 ecoregion_vegtype_error_figure = ggplot(ecoregion_vegtype_predictions, aes(x=fCover_observed, y=fCover_predicted)) + 
   geom_point(alpha=0.2, shape=1, size=1) + 
@@ -102,4 +110,4 @@ ecoregion_vegtype_error_figure = ggplot(ecoregion_vegtype_predictions, aes(x=fCo
         strip.text = element_text(hjust = 0, size=8)) +
   labs(x='Observed fCover', y='Predicted fCover') 
 
-ggsave('manuscript/figs/ecoregion_errors.png',plot=ecoregion_vegtype_error_figure, height=20, width = 15, units='cm', dpi=200)
+ggsave('manuscript/figs/ecoregion_vegtype_errors.png',plot=ecoregion_vegtype_error_figure, height=20, width = 15, units='cm', dpi=200)
