@@ -1,0 +1,31 @@
+{
+    "model_name": "PhenoGrass",
+    "parameters": {
+        "b2": 0.002221176058508356,
+        "b3": 0.05855019925752325,
+        "b4": 0.2570557870063386,
+        "Phmax": 48.766511986789226,
+        "Phmin": 26.374835253439503,
+        "Topt": 29.67732499381033,
+        "L": 3.3316473604123047,
+        "b1": -1,
+        "h": 10.360158569526618
+    },
+    "metadata": {
+        "fitting_info": {
+            "method": "DE",
+            "loss_function": "mean_cvmae",
+            "optimize_output": {
+                "fun": 0.3652440874283231,
+                "nfev": 3152800,
+                "nit": 1125,
+                "message": "Optimization terminated successfully.",
+                "success": true
+            }
+        },
+        "model_evaluated": "ecoregion-vegtype_GrPlains_GR_PhenoGrass_cd499f8473ab478e.json",
+        "timeseries_used": "14,15,36,46,47,52,62,63,64,65,67,74,97,107",
+        "fitting_set": "GrPlains_GR-14_15_36_46_47_52_62_63_64_65_67_74_97_107",
+        "left_out_timeseries": 13
+    }
+}

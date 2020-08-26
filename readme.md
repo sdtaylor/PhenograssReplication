@@ -16,6 +16,9 @@ The following R scripts, run in order, will generate all the appropriate data us
 `data_prep/process_phenocam_data.R ` - preprocess the downloaded phenocam data to the file `data/processed_phenocam_data.csv`  
 `data_prep/process_soil_values.R`   - extract the soil variables from the  rasters in `data/soil_rasters`, with results going in to `site_list.csv`  
 
+### Data
+
+`data/` - This holds the model input data (phenocam, daymet, soil data). The two model output files (`full_model_predictions.csv`, and `cv_model_predictions.csv`) are available in the zenodo repo. [https://doi.org/10.5281/zenodo.3897319](https://doi.org/10.5281/zenodo.3897319)
 
 ### Model fitting and predictions
 
@@ -35,7 +38,7 @@ The following files are used by the above script to fascilitate data loading, sa
 `tools/load_data.py`  
 `tools/load_models.py`
 
-The `fitted_models` folder contains saved model parameterizations from all model fits described in the paper. The first set of models are in `2020-05-29_4dac8b702c3241eb`, while the leave 1-out cross validation models are in `2020-06-01_c41f4f6a115d4c3a`. These are described with metadata in `fitted_models/model_sets.json`, and are designed to be accessed and iterated thru with the functions in `tools/load_models.py`.
+The `fitted_models` folder contains saved model parameterizations from all model fits described in the paper. The first set of models are in `2020-07-29_0a82f11673e54a9c`, while the leave 1-out cross validation models are in `2020-08-23_69f5e0932e7b4970`. These are described with metadata in `fitted_models/model_sets.json`, and are designed to be accessed and iterated thru with the functions in `tools/load_models.py`.
 
 ### Model analysis. 
 
@@ -43,6 +46,8 @@ The `fitted_models` folder contains saved model parameterizations from all model
 `analysis/analyze_cv_errors.R` - This genates the CV errors  
 `analysis/discussion_figure_site_gcc_comparison.R` - This generates the discussion figure of smoothed Grassland GCC  
 `analysis/make_error_tables.R` - Make latex error tables for the manuscript  
+`analysis/error_figures.R` - Make Figures 3 and 4  showing 1:1 comparisons of the 11 model iterations  
+`analysis/NA_desert_grassland_fig.R` - Figure S1 highlighting predicted values in desert grasslands.  
 `analysis/site_level_model_output_figure.R` - Make a large figure showing predictions and actuall GCC for every site  
 `analysis/site_map.R` - create the map in the manuscript  
 `analysis/site_table.R` - create the site table in the manuscript appendix  

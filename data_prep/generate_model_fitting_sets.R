@@ -25,16 +25,6 @@ ecoregions_vegtype_sets = phenocam_sites %>%
   mutate(model_fitting_sets = paste('ecoregion-vegtype',ecoregion_abbr,roi_type,sep='_')) %>%
   mutate(model_fitting_scale = 'ecoregion-vegtype')
 
-ecoregions_sets = phenocam_sites %>%
-  group_by(ecoregion) %>%
-  summarise(n_phenocams = n(),
-            total_site_years = sum(site_years)) %>%
-  ungroup() %>%
-  filter(n_phenocams>=min_sites_needed) %>%
-  left_join(ecoregion_codes, by='ecoregion') %>%
-  mutate(model_fitting_sets = paste('ecoregion',ecoregion_abbr,sep='_')) %>%
-  mutate(model_fitting_scale = 'ecoregion')
-
 vegtype_sets = phenocam_sites %>%
   group_by(roi_type) %>%
   summarise(n_phenocams = n(),
@@ -47,10 +37,6 @@ vegtype_sets = phenocam_sites %>%
 ##########################
 # Assign timeseries to each set. A timeseries can be in the 3
 # broad catagories only once each.
-ecoregion_set_assignments = ecoregions_sets %>%
-  select(ecoregion, model_fitting_sets) %>%
-  left_join(phenocam_sites, by=c('ecoregion')) %>%
-  select(model_fitting_sets, timeseries_id)
 
 ecoregions_vegtype_set_assignments = ecoregions_vegtype_sets %>%
   select(ecoregion, roi_type, model_fitting_sets) %>%
@@ -67,19 +53,17 @@ allsite_assignments = phenocam_sites %>%
   mutate(model_fitting_sets = 'allsites') %>%
   select(model_fitting_sets, timeseries_id)
 
-all_assignments = ecoregion_set_assignments %>%
-  bind_rows(ecoregions_vegtype_set_assignments) %>%
+all_assignments = allsite_assignments %>%
   bind_rows(vegtype_assignments) %>%
-  bind_rows(allsite_assignments)
+  bind_rows(ecoregions_vegtype_set_assignments)
 
-# Sanity check, each timeseries should not be represented > 4 times
+# Sanity check, each timeseries should not be represented > 3 times
 x= all_assignments %>% count(timeseries_id) %>% pull(n)
-if(any(x>4)) stop('some phenocam timeseries added more than 4 times')
+if(any(x>3)) stop('some phenocam timeseries added more than 3 times')
 
 #############################################
 # A model building list to iterate over
 model_building_set_list = ecoregions_vegtype_sets %>%
-  bind_rows(ecoregions_sets) %>%
   bind_rows(vegtype_sets) %>%
   add_row(model_fitting_sets = 'allsites',model_fitting_scale='allsites', n_phenocams = nrow(phenocam_sites), total_site_years = sum(phenocam_sites$site_years)) %>%
   select(model_fitting_sets,model_fitting_scale, n_phenocams, total_site_years)
