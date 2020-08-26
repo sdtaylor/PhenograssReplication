@@ -144,11 +144,11 @@ All Shrublands & 0.44 & 0.09 & 14 & 81.0\\
 \hline
 \hspace{1em}Grasslands & -0.04 & 0.19 & 5 & 20.3\\
 \hline
-\hspace{1em}\textbf{Shrublands} & 0.52 & 0.16 & 8 & 39.7\\
+\hspace{1em}Shrublands & 0.52 & 0.16 & 8 & 39.7\\
 \hline
 \textbf{N.W. Forests} &  &  &  & \\
 \hline
-\hspace{1em}\textbf{Grasslands} & 0.64 (0.52) & 0.08 & 7 & 50.7\\
+\hspace{1em}Grasslands & 0.64 (0.52) & 0.08 & 7 & 50.7\\
 \hline
 \end{tabular}
 \end{table}
