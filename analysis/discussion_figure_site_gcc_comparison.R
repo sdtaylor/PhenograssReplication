@@ -32,7 +32,7 @@ discusion_figure = ggplot(grassland_gcc, aes(x=doy, y=gcc, color=as.factor(times
         strip.text = element_text(hjust = 0,size=16)) +
   labs(x='Day of Year', y='Avg. GCC')
 
-ggsave('manuscript/figs/fig3_discussion_avg_site_gcc.png', plot=discusion_figure, height = 15, width=30, units = 'cm', dpi=200)  
+ggsave('manuscript/figs/fig5_discussion_avg_site_gcc.png', plot=discusion_figure, height = 15, width=30, units = 'cm', dpi=200)  
   
 
   # Also while where here parse out what the original ecoregions were
