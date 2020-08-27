@@ -1,0 +1,12 @@
+fitting_set,model,rmse,r2,n_timeseries,site_years
+allsites,PhenoGrass,0.14,0.31,89,462.5
+ecoregion-vegtype_ETempForests_AG,PhenoGrass,0.12,0.33,20,99.2
+ecoregion-vegtype_ETempForests_GR,PhenoGrass,0.07,0.82,6,35.7
+ecoregion-vegtype_GrPlains_AG,PhenoGrass,0.19,0.18,13,54.300000000000004
+ecoregion-vegtype_GrPlains_GR,PhenoGrass,0.13,0.69,15,71.5
+ecoregion-vegtype_NADeserts_GR,PhenoGrass,0.19,-0.04,5,20.3
+ecoregion-vegtype_NADeserts_SH,PhenoGrass,0.16,0.52,8,39.7
+ecoregion-vegtype_NWForests_GR,PhenoGrass,0.08,0.64,7,50.699999999999996
+vegtype_AG,PhenoGrass,0.19,0.24,38,175.7
+vegtype_GR,PhenoGrass,0.16,0.45,37,205.8
+vegtype_SH,PhenoGrass,0.09,0.44,14,81
