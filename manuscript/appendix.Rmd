@@ -10,7 +10,7 @@ Supplementary Table A1 & Image A1
 \newpage
 
 \begin{table}
-\caption{Sites used in analysis. A * indicates the site was also used in the original analysis.}
+\caption{Sites used in analysis. A * indicates the site was also used in Hufkins et al. 2016.}
 \small
 \begin{tabular}{l|r|r|l|r|l|l|r|l}
 \hline

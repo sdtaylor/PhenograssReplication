@@ -29,7 +29,7 @@ error_table_order = tribble(
 
 )
 
-bold_row_titles = c(5,8,11,13,14,15)
+bold_row_titles = c(5,8,11,14)
 
 error_table = primary_errors %>%
   full_join(error_table_order, by=c('fitting_set'='model_fitting_sets')) %>%

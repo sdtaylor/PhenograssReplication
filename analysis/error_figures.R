@@ -65,7 +65,7 @@ allsite_veg_error_fig = ggplot(allsite_veg_predictions, aes(x=fCover_observed, y
         strip.text = element_text(hjust = 0, size=10)) +
   labs(x='Observed fCover', y='Predicted fCover') 
 
-ggsave('manuscript/figs/allsite_veg_errors.png',plot=allsite_veg_error_fig, height=12, width = 12, units='cm', dpi=200)
+ggsave('manuscript/figs/allsite_veg_errors.png',plot=allsite_veg_error_fig, height=12, width = 12, units='cm', dpi=150)
 
 
 #######################################################
@@ -110,4 +110,4 @@ ecoregion_vegtype_error_figure = ggplot(ecoregion_vegtype_predictions, aes(x=fCo
         strip.text = element_text(hjust = 0, size=8)) +
   labs(x='Observed fCover', y='Predicted fCover') 
 
-ggsave('manuscript/figs/ecoregion_vegtype_errors.png',plot=ecoregion_vegtype_error_figure, height=20, width = 15, units='cm', dpi=200)
+ggsave('manuscript/figs/ecoregion_vegtype_errors.png',plot=ecoregion_vegtype_error_figure, height=20, width = 15, units='cm', dpi=150)
