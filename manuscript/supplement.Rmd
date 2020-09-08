@@ -5,7 +5,7 @@ output: pdf_document
 ## Multi-scale assessment of a grassland productivity model
 **Shawn D. Taylor, Dawn M. Browning**
 
-Supplementary Table A1 & Image A1  
+Supplementary Table S1 & Image S1  
 
 \newpage
 
