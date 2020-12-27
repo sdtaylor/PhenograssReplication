@@ -87,6 +87,19 @@ To find the most appropriate scale we evaluated the model using three different 
 
 We evaluated each of the 11 models using the coefficient of determination (R\textsuperscript{2}) and root mean square error (RMSE) of the daily fractional cover estimates. R\textsuperscript{2} and RMSE were calculated for each site and then averaged across all sites within the respective scale. There was no cross-validation using out of sample data in the initial fitting as it would have been computationally expensive. Rather, error metrics from these in-sample tests were treated as a best case scenario in what each model parameterization can achieve. From these results we used a threshold to select which models to evaluate further using cross-validation. The threshold value was an R\textsuperscript{2} threshold of 0.65, which is viewed as "acceptable" for time-series models [@ritter2013].
 
+Parameterization was done using differential evolution, a global optimization algorithm, to minimize the mean coefficient of variation of the mean absolute error (\textit{F}, Eq. 1), which accounts for variation among sites [@choler2011].
+
+\begin{equation}
+F = \frac{1}{N}\sum_{j=1}^{N}CVMAE_{j}
+\end{equation}
+
+
+\begin{equation}
+CVMAE_{j} = \frac{\frac{1}{i}\sum_{i=1}^{n}|fCover_{i,obs} - fCover_{i,pred}|}{\overline{fCover_{obs}}}
+\end{equation}
+
+where \textit{N} is the number of sites and \textit{n} is the number of daily values at each site, \textit{fCover\textsubscript{i,obs}} and \textit{fCover\textsubscript{i,pred}} are observed and predicted values, respectively. \textit{fCover\textsubscript{pred}} is the average observed \textit{fCover} at each site.
+ 
 
 ```{r, out.width = "8.3cm", echo = FALSE, fig.cap = "Scaling representation of the 11 model parameterizations. Numbers in parentheses represent the number of sites and site years, respectively. Each model uses a different subset of sites ranging from the entire dataset (All Site Model) to one vegetation type within an ecoregion (e.g., Eastern Temperate Forest Grasslands)."}
 knitr::include_graphics("figs/fig2_scales.png")
