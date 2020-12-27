@@ -5,12 +5,37 @@ output: pdf_document
 ## Multi-scale assessment of a grassland productivity model
 **Shawn D. Taylor, Dawn M. Browning**
 
-Supplementary Table S1 & Image S1  
+Supplementary Table S1, S2 & Image S1  
+
+
+\begin{tabular}{l|r|r}
+\hline
+parameter & Great Plains Grasslands & E. Temperate Forests Grasslands\\
+\hline
+b1 & 0.0021756 & 0.0143214\\
+\hline
+b2 & 0.0607134 & 0.0269089\\
+\hline
+b3 & 0.2630305 & 9.8632117\\
+\hline
+Phmax & 48.1106340 & 49.6940973\\
+\hline
+Phmin & 25.5471298 & 33.1345876\\
+\hline
+Topt & 29.7376494 & 35.6335041\\
+\hline
+L & 3.0685254 & 3.1769617\\
+\hline
+h & 10.3601586 & 949.5914722\\
+\hline
+\end{tabular}
+Table S1. Final parameters for the two models which met the minimum NSE threshold. See Supplement #2 for parameter descriptions.
+
 
 \newpage
 
+Table S2. Sites used in analysis. A * indicates the site was also used in Hufkins et al. 2016.
 \begin{table}
-\caption{Sites used in analysis. A * indicates the site was also used in Hufkins et al. 2016.}
 \small
 \begin{tabular}{l|r|r|l|r|l|l|r|l}
 \hline
@@ -220,6 +245,8 @@ vaira* & 38.41 & -120.95 & GR & 1000 & 2011-10-17 & 2020-02-28 & 7.7 & MedCA\\
 \newpage
 \newpage
 
-```{r, out.width = "15cm", echo = FALSE, fig.cap = "Predicted (red) and observed (black) fCover values at five grassland sites in the North American Deserts ecoregion for the years 2015-2018. Blue bars represent precipitation in decimeters."}
+```{r, out.width = "15cm", echo = FALSE}
 knitr::include_graphics("figs/figS1_desert_grasslands.png")
 ```
+
+Figure S1. Predicted (red) and observed (black) fCover values at five grassland sites in the North American Deserts ecoregion for the years 2015-2018. Blue bars represent precipitation in decimeters.
