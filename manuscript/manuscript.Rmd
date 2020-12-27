@@ -85,83 +85,88 @@ For historic precipitation and temperature we used the daily 4-km resolution Day
 
 To find the most appropriate scale we evaluated the model using three different combinations of ecoregion and vegetation type, with 11 total model parameterizations (Fig. 2). Here we use the term “spatial scale” to refer to the combination of ecoregion/s and vegetation type/s used within each model. This includes using all vegetation types with an ecoregion, or all sites of a specific vegetation type from several ecoregions. The largest scale used all Phenocam locations described above (89 sites). Next were all sites, respectively, within the three vegetation types indicated by the ROI (grasslands, shrublands, and agricultural). Finally, we parameterized models for each vegetation type within each Level 1 North American Ecoregion (eg. All grassland sites within the Great Plains ecoregion). All sets of parameterized models were limited to have at least five sites.
 
-We evaluated each of the 11 models using the coefficient of determination (R\textsuperscript{2}) and root mean square error (RMSE) of the daily fractional cover estimates. R\textsuperscript{2} and RMSE were calculated for each site and then averaged across all sites within the respective scale. There was no cross-validation using out of sample data in the initial fitting as it would have been computationally expensive. Rather, error metrics from these in-sample tests were treated as a best case scenario in what each model parameterization can achieve. From these results we used a threshold to select which models to evaluate further using cross-validation. The threshold value was an R\textsuperscript{2} threshold of 0.65, which is viewed as "acceptable" for time-series models [@ritter2013].
+We evaluated each of the 11 models using the Nash Sutcliffe coefficient of efficiency (\(NSE\), Eq. 2) as well as the mean coefficient of variation of the mean absolute error (\textit{F}, Eq. 3) of the daily fractional cover estimates. \(NSE\) was calculated for each site and then averaged across all sites within the respective spatial scale (\( \overline{NSE} \), Eq. 1). There was no cross-validation using out of sample data in the initial fitting as it would have been computationally expensive. Rather, error metrics from these in-sample tests were treated as a best case scenario in what each model parameterization can achieve. From these results we used a threshold to select which models to evaluate further using cross-validation. The threshold value was an \(\overline{NSE}\) of 0.65, which is viewed as "acceptable" for time-series models [@ritter2013]. Parameterization was done using differential evolution, a global optimization algorithm, to minimize \textit{F}. 
 
-Parameterization was done using differential evolution, a global optimization algorithm, to minimize the mean coefficient of variation of the mean absolute error (\textit{F}, Eq. 1), which accounts for variation among sites [@choler2011].
+\begin{equation}
+\overline{NSE} = \frac{1}{N}\sum_{j=1}^{N}NSE_{j}
+\end{equation}
+
+\begin{equation}
+NSE_{j} = 1- \frac{\sum_{i=1}^{n}(fCover_{obs} - fCover_{pred})^{2}}{\sum_{i=1}^{n}(fCover_{obs} - \overline{fCover_{obs}})^{2}}
+\end{equation}
 
 \begin{equation}
 F = \frac{1}{N}\sum_{j=1}^{N}CVMAE_{j}
 \end{equation}
 
-
 \begin{equation}
 CVMAE_{j} = \frac{\frac{1}{i}\sum_{i=1}^{n}|fCover_{i,obs} - fCover_{i,pred}|}{\overline{fCover_{obs}}}
 \end{equation}
 
-where \textit{N} is the number of sites and \textit{n} is the number of daily values at each site, \textit{fCover\textsubscript{i,obs}} and \textit{fCover\textsubscript{i,pred}} are observed and predicted values, respectively. \textit{fCover\textsubscript{pred}} is the average observed \textit{fCover} at each site.
+where \textit{N} is the number of sites within the spatial scale evaluated and \textit{n} is the number of daily values at each site, \textit{fCover\textsubscript{i,obs}} and \textit{fCover\textsubscript{i,pred}} are observed and predicted values, respectively. \textit{fCover\textsubscript{pred}} is the average observed \textit{fCover} at each site.
  
 
 ```{r, out.width = "8.3cm", echo = FALSE, fig.cap = "Scaling representation of the 11 model parameterizations. Numbers in parentheses represent the number of sites and site years, respectively. Each model uses a different subset of sites ranging from the entire dataset (All Site Model) to one vegetation type within an ecoregion (e.g., Eastern Temperate Forest Grasslands)."}
 knitr::include_graphics("figs/fig2_scales.png")
 ```
 
-Models which exceed the threshold were subject to further evaluation. For each model we performed a leave one out cross-validation, where the model was re-fit with one Phenocam site not included in the training data, and then evaluated against this left out site. In this step a scaling coefficient to link mean annual precipitation with PhenoCam G\textsubscript{cc} was held constant at the value obtained in first fitting. The resulting R\textsuperscript{2} and RMSE are the average among all modelled sites using their respective out of sample test.
+Models which exceed the threshold were subject to further evaluation. For each model we performed a leave one out cross-validation, where the model was re-fit with one Phenocam site not included in the training data, and then evaluated against this left out site. In this step a scaling coefficient to link mean annual precipitation with PhenoCam G\textsubscript{cc} was held constant at the value obtained in first fitting. The resulting \(\overline{NSE}\) and \textit{F} are from all modelled sites using their respective out of sample test.
 
 All phenocam data were downloaded using the phenocamr R package [@hufkens2018]. Other packages used in the R 3.6 language were dplyr [@dplyr], tidyr [@tidyr], ggplot2 [@ggplot2], daymetr [@hufkens2018], rgdal [@rgdal2019], and sf [@sf2018]. Python 3.7 packages included scipy [@scipy2020], numpy [@numpy2011], pandas [@pandas], and dask [@dask].  All code and data used in the analysis is available in the repository at https://github.com/sdtaylor/PhenograssReplication, the PhenoGrass model is implemented in a python package https://github.com/sdtaylor/GrasslandModels. Both are archived permanently on Zenodo (https://doi.org/10.5281/zenodo.3897319). 
 
 # Results
 
-At the largest scale, where the PhenoGrass model was parameterized using all 89 sites, the model performed poorly with an average R\textsuperscript{2} value among sites of 0.31 (Table 1; Fig. 3). Models built using all sites of a respective vegetation type performed poorly as well, though were slightly better than the all site model (Fig. 3). The best model performance was achieved when models were built using a single vegetation type subset to a single ecoregion. Grasslands within the Great Plains and Eastern Temperate Forests ecoregions were the only instances where R\textsuperscript{2} exceeded the 0.65 threshold, though Grasslands within N.W. Forests came close (R\textsuperscript{2} = 0.64). 
+At the largest scale, where the PhenoGrass model was parameterized using all 89 sites, the model performed poorly with an \(\overline{NSE}\) value among sites of 0.31 (Table 1; Fig. 3). Models built using all sites of a respective vegetation type performed poorly as well, though were slightly better than the all site model (Fig. 3). The best model performance was achieved when models were built using a single vegetation type subset to a single ecoregion. Grasslands within the Great Plains and Eastern Temperate Forests ecoregions were the only instances where \(\overline{NSE}\) exceeded the 0.65 threshold, though Grasslands within N.W. Forests came close (NSE = 0.64). 
 
-```{r, out.width = "12cm", echo = FALSE, fig.cap = "Observed and predicted fCover values of the All Site model using all available data, and the three vegetation type models each using all PhenoCam sites with an ROI in the respective vegetation type. "}
+```{r, out.width = "12cm", echo = FALSE, fig.cap = "Observed and predicted fCover values of the All Site model using all available data, and the three vegetation type models each using all PhenoCam sites with an ROI in the respective vegetation type. NSE is the average Nash Sutcliffe coefficient of efficiency among sites, and \textit{F} is the mean coefficient of variation of the mean absolute error. The correlation line (blue) represents the overall trend in predicted versus observed values, while the 1:1 line (red) represents a perfect fit."}
 knitr::include_graphics("figs/allsite_veg_errors.png")
 ```
 
-```{r, out.width = "12cm", echo = FALSE, fig.cap = "Observed and predicted fCover values for seven model iterations where only sites with a specified vegetation type within a single ecoregion were used in model fitting."}
+```{r, out.width = "12cm", echo = FALSE, fig.cap = "Observed and predicted fCover values for seven model iterations where only sites with a specified vegetation type within a single ecoregion were used in model fitting. NSE is the average Nash Sutcliffe coefficient of efficiency among sites, and \textit{F} is the mean coefficient of variation of the mean absolute error. The correlation line (blue) represents the overall trend in predicted versus observed values, while the 1:1 line (red) represents a perfect fit."}
 knitr::include_graphics("figs/ecoregion_vegtype_errors.png")
 ```
 
-In all 11 iterations the PhenoGrass model tended to underestimate the highest fCover values, and to a lesser degree overpredict the lowest values (Figs. 3,4). The best performing iterations (Grasslands in the Great Plains and Eastern Temperate forests) minimized this effect (Fig. 4). The worst performing iteration, Grasslands in N.A. Deserts, had little variation in predicted fCover values, resulting in the lowest R\textsuperscript{2} overall. 
+In all 11 iterations the PhenoGrass model tended to underestimate the highest fCover values, and to a lesser degree overpredict the lowest values (Figs. 3,4). The best performing iterations (Grasslands in the Great Plains and Eastern Temperate forests) minimized this effect (Fig. 4). The worst performing iteration, Grasslands in N.A. Deserts, had little variation in predicted fCover values, resulting in the lowest \(\overline{NSE}\) overall. 
 
-The grassland vegetation type, subset to specific ecoregions, predominantly outperformed other iterations of the PhenoGrass model (Table 1). Models built using grasslands within the Eastern Temperate Forest and Great Plains ecoregions had the highest average R\textsuperscript{2} values of 0.82 and  0.69, respectively. Using leave one out cross-validation on these two grassland model iterations resulted in similar errors of 0.79 and 0.67 for the Eastern Temperate Forest and Great Plains, respectively. Though N.W. Forests grasslands had an in-sample R\textsuperscript{2} just below the 0.65 threshold, the cross-validation was well below it (0.52). Grasslands in the North American deserts were not modelled well at any scale and had the lowest R\textsuperscript{2} values in the entire analysis. The observed greenness patterns of these desert grasslands had extremely high variability in their magnitude and timing, with short distinct peaks in greenness and numerous off-peak fluctuations. The fitted model, which minimized the mean CVME among the 5 sites, was not able to reproduce this high variability and instead produced fCover values that were severely constrained to a narrow range (Fig. S1). 
+The grassland vegetation type, subset to specific ecoregions, predominantly outperformed other iterations of the PhenoGrass model (Table 1). Models built using grasslands within the Eastern Temperate Forest and Great Plains ecoregions had the highest \(\overline{NSE}\) values of 0.82 and  0.69, respectively. Using leave one out cross-validation on these two grassland model iterations resulted in similar errors of 0.79 and 0.67 for the Eastern Temperate Forest and Great Plains, respectively. Though N.W. Forests grasslands had an in-sample \(\overline{NSE}\) just below the 0.65 threshold, the cross-validation was well below it (0.52). Grasslands in the North American deserts were not modelled well at any scale and had the lowest \(\overline{NSE}\) values in the entire analysis. The observed greenness patterns of these desert grasslands had extremely high variability in their magnitude and timing, with short distinct peaks in greenness and numerous off-peak fluctuations. The fitted model, which minimized the mean CVME among the 5 sites, was not able to reproduce this high variability and instead produced fCover values that were severely constrained to a narrow range (Fig. S1). 
 
-Agriculture and shrubland sites were poorly modelled at all scales. Performance of agriculture within the E. Temperate Forest ecoregion (R\textsuperscript{2} = 0.33) improved over the All Agriculture model (R\textsuperscript{2} = 0.18), but decreased in the Great Plains (from 0.24 to 0.18). There was only a single ecoregion with a minimum of five shrubland sites, N.A. Deserts, and it performed only slightly better than the All Shrubland model. Shrublands in N.A. Deserts did not have the high variability seen in desert grasslands. 
+Agriculture and shrubland sites were poorly modelled at all scales. Performance of agriculture within the E. Temperate Forest ecoregion (NSE = 0.33) improved over the All Agriculture model (NSE = 0.18), but decreased in the Great Plains (from 0.24 to 0.18). There was only a single ecoregion with a minimum of five shrubland sites, N.A. Deserts, and it performed only slightly better than the All Shrubland model. Shrublands in N.A. Deserts did not have the high variability seen in desert grasslands. 
 
 \begin{table}
-\caption{Average site-level coefficient of determination (R\textsuperscript{2}) and root mean square error (RMSE) for each model parameterization. Bold indicates when the R\textsuperscript{2} was greater than the acceptable threshold of 0.65. Values in parentheses represent the average R\textsuperscript{2} in leave-1-out cross validation.}
+\caption{Average site-level Nash Sutcliffe coefficient of efficiency (\(\overline{NSE}\)) and mean coefficient of variation of the mean absolute error (\textit{F}) for each model parameterization. Bold indicates when the \(\overline{NSE}\) was greater than the acceptable threshold of 0.65. Values in parentheses represent the \(\overline{NSE}\) or \textit{F} in leave-1-out cross validation.}
 \begin{tabular}{l|l|r|r|r}
 \hline
- & R\textsuperscript{2} & RMSE & Num. Sites & Site Years\\
+& \(\overline{NSE}\) & \textit{F} & Num. Sites & Site Years\\
 \hline
-All Sites & 0.31 & 0.14 & 89 & 462.5\\
+All Sites & 0.31 & 0.50 & 89 & 462.5\\
 \hline
-All Agriculture & 0.24 & 0.19 & 38 & 175.7\\
+All Agriculture & 0.24 & 0.51 & 38 & 175.7\\
 \hline
-All Grasslands & 0.45 & 0.16 & 37 & 205.8\\
+All Grasslands & 0.45 & 0.44 & 37 & 205.8\\
 \hline
-All Shrublands & 0.44 & 0.09 & 14 & 81.0\\
+All Shrublands & 0.44 & 0.40 & 14 & 81.0\\
 \hline
 \textbf{E. Temperate Forests} &  &  &  & \\
 \hline
-\hspace{1em}Agriculture & 0.33 & 0.12 & 20 & 99.2\\
+\hspace{1em}Agriculture & 0.33 & 0.45 & 20 & 99.2\\
 \hline
-\hspace{1em}Grasslands & \textbf{0.82 (0.79)} & 0.07 & 6 & 35.7\\
+\hspace{1em}Grasslands & \textbf{0.82 (0.79)} & 0.28 (0.30) & 6 & 35.7\\
 \hline
 \textbf{Great Plains} &  &  &  & \\
 \hline
-\hspace{1em}Agriculture & 0.18 & 0.19 & 13 & 54.3\\
+\hspace{1em}Agriculture & 0.18 & 0.57 & 13 & 54.3\\
 \hline
-\hspace{1em}Grasslands & \textbf{0.69 (0.67)} & 0.13 & 15 & 71.5\\
+\hspace{1em}Grasslands & \textbf{0.69 (0.67)} & 0.39 (0.40) & 15 & 71.5\\
 \hline
 \textbf{N. American Deserts} &  &  &  & \\
 \hline
-\hspace{1em}Grasslands & -0.04 & 0.19 & 5 & 20.3\\
+\hspace{1em}Grasslands & -0.04 & 0.44 & 5 & 20.3\\
 \hline
-\hspace{1em}Shrublands & 0.52 & 0.16 & 8 & 39.7\\
+\hspace{1em}Shrublands & 0.52 & 0.33 & 8 & 39.7\\
 \hline
 \textbf{N.W. Forests} &  &  &  & \\
 \hline
-\hspace{1em}Grasslands & 0.64 (0.52) & 0.08 & 7 & 50.7\\
+\hspace{1em}Grasslands & 0.64 & 0.34 & 7 & 50.7\\
 \hline
 \end{tabular}
 \end{table}
