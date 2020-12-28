@@ -92,7 +92,7 @@ We evaluated each of the 11 models using the Nash Sutcliffe coefficient of effic
 \end{equation}
 
 \begin{equation}
-NSE_{j} = 1- \frac{\sum_{i=1}^{n}(fCover_{obs} - fCover_{pred})^{2}}{\sum_{i=1}^{n}(fCover_{obs} - \overline{fCover_{obs}})^{2}}
+NSE_{j} = 1- \frac{\sum_{i=1}^{n}(fCover_{i,obs} - fCover_{i,pred})^{2}}{\sum_{i=1}^{n}(fCover_{i,obs} - \overline{fCover_{obs}})^{2}}
 \end{equation}
 
 \begin{equation}
