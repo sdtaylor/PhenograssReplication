@@ -7,7 +7,7 @@ output: pdf_document
 
 Supplementary Equations, Table S1, S2 & Image S1  
 
-The PhenoGrass model from Hufkens et al. 2016 takes the following form:
+The PhenoGrass model from Hufkens et al. 2016 has the following form:
 
 \begin{equation}
 W_{t+1} = W_{t} + P_{t} - (1-V_{t})/(D_{t}/(W_{cap}-{W_p}))^{2}E_{t}-gb_{3}D_{t}V_{t}
