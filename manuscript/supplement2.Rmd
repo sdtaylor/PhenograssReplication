@@ -51,7 +51,7 @@ S_{t-1} \leq  S_{t}; & d=0
 g = (\frac{T_{max}-T_{m}}{T_{max}-T_{opt}})(\frac{T_{m}}{T_{opt}})^{(\frac{T_{opt}}{T_{max}-T_{opt}})}
 \end{equation}
 
-The vegetaion parameter V corresponds to the fCover, which is mapped to PhenoCam G\textsubscript{cc} using the transfer function:
+The vegetaion parameter V corresponds to the fCover, which is mapped to PhenoCam G\textsubscript{cc} using the transfer function based on the relationship between annual precipitation and fractional vegetation cover (Donohue et al. 2013).:
 
 \begin{equation}
 S_{c} = MAP/(MAP+h)
@@ -101,5 +101,6 @@ Where G\textsubscript{dn}, R\textsubscript{dn}, and B\textsubscript{dn} are the 
 \end{table}
 
 ## References
-Richardson, A. D., Hufkens, K., Milliman, T., Aubrecht, D. M., Chen, M., Gray, J. M., … Frolking, S. (2018). Tracking vegetation phenology across diverse North American biomes using PhenoCam imagery. Scientific Data, 5(1), 180028. https://doi.org/10.1038/sdata.2018.28  
+Donohue, R. J., Roderick, M. L., McVicar, T. R., & Farquhar, G. D. (2013). Impact of CO 2 fertilization on maximum foliage cover across the globe’s warm, arid environments. Geophysical Research Letters, 40(12), 3031–3035. https://doi.org/10.1002/grl.50563  
 Hufkens, K., Keenan, T. F., Flanagan, L. B., Scott, R. L., Bernacchi, C. J., Joo, E., … Richardson, A. D. (2016). Productivity of North American grasslands is increased under future climate scenarios despite rising aridity. Nature Climate Change, 6(7), 710–714. https://doi.org/10.1038/nclimate2942  
+Richardson, A. D., Hufkens, K., Milliman, T., Aubrecht, D. M., Chen, M., Gray, J. M., … Frolking, S. (2018). Tracking vegetation phenology across diverse North American biomes using PhenoCam imagery. Scientific Data, 5(1), 180028. https://doi.org/10.1038/sdata.2018.28  
