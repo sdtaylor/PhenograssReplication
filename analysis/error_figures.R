@@ -17,11 +17,11 @@ phenocam_site_info = read_csv('site_list.csv') %>%
 get_label_stats = function(df){
   # This needs to accept a group_by() output
   df %>%
-    summarise(rmse = mean(rmse),
-              r2 =   mean(r2),
+    summarise(mean_cvmae = mean(cvmae),
+              nse  =   mean(nse),
               n_timeseries = n_distinct(timeseries_id)) %>%
     ungroup() %>%
-    mutate(label_text = paste0('R2: ',round(r2,2),'\n','RMSE: ',round(rmse,2),'\n',n_timeseries,' sites'))
+    mutate(label_text = paste0('list(bar(NSE):',round(nse,2),',','italic(F):',round(mean_cvmae,2),',',n_timeseries,'~sites',')'))
 }
 
 #######################################################
@@ -39,8 +39,8 @@ allsite_veg_predictions$fitting_set = factor(allsite_veg_predictions$fitting_set
 
 allsite_veg_predictions_error_text = allsite_veg_predictions %>%
   group_by(fitting_set, timeseries_id) %>%
-  summarise(rmse = sqrt(mean( (fCover_observed - fCover_predicted)^2 ,na.rm=T)),
-            r2   = 1  - sum((fCover_observed - fCover_predicted)^2,na.rm=T) / sum((fCover_observed - mean(fCover_observed,na.rm=T))^2,na.rm=T),
+  summarise(cvmae = mean(abs(fCover_observed - fCover_predicted), na.rm=T)/mean(fCover_observed, na.rm=T),
+            nse   = 1  - sum((fCover_observed - fCover_predicted)^2,na.rm=T) / sum((fCover_observed - mean(fCover_observed,na.rm=T))^2,na.rm=T),
             n=n(),
             percent_na=mean(is.na(fCover_observed))) %>%
   ungroup() %>%
@@ -53,7 +53,7 @@ allsite_veg_error_fig = ggplot(allsite_veg_predictions, aes(x=fCover_observed, y
   geom_line(data=tibble(fCover_observed=seq(0,1,0.1), fCover_predicted=seq(0,1,0.1)),size=1, aes(color='a')) + # a 1:1 line so that a legend can be hacked in without
   geom_smooth(method='lm', se=FALSE, aes(color='b'), size=1) +                                                  # specifying a color columns
   scale_color_manual(labels=c('1:1 Line','Correlation'), values=c('#D55E00','#0072B2')) + 
-  geom_label(data=allsite_veg_predictions_error_text, aes(x=0.01,y=0.88,label=label_text), size=2, hjust=0) + 
+  geom_label(data=allsite_veg_predictions_error_text, aes(x=0.01,y=0.90,label=label_text), size=2, hjust=0, parse=T) + 
   facet_wrap(~fitting_set, ncol=2) +
   theme_bw(10) +
   theme(legend.position = c(0.895,0.08),
@@ -65,7 +65,7 @@ allsite_veg_error_fig = ggplot(allsite_veg_predictions, aes(x=fCover_observed, y
         strip.text = element_text(hjust = 0, size=10)) +
   labs(x='Observed fCover', y='Predicted fCover') 
 
-ggsave('manuscript/figs/allsite_veg_errors.png',plot=allsite_veg_error_fig, height=12, width = 12, units='cm', dpi=150)
+ggsave('manuscript/figs/allsite_veg_errors.png',plot=allsite_veg_error_fig, height=12, width = 12, units='cm', dpi=200)
 
 
 #######################################################
@@ -86,8 +86,8 @@ ecoregion_vegtype_predictions = ecoregion_vegtype_predictions %>%
 
 ecoregion_vegtype_predictions_error_text = ecoregion_vegtype_predictions %>%
   group_by(facet_label, timeseries_id) %>%
-  summarise(rmse = sqrt(mean( (fCover_observed - fCover_predicted)^2 ,na.rm=T)),
-            r2   = 1  - sum((fCover_observed - fCover_predicted)^2,na.rm=T) / sum((fCover_observed - mean(fCover_observed,na.rm=T))^2,na.rm=T),
+  summarise(cvmae = mean(abs(fCover_observed - fCover_predicted), na.rm=T)/mean(fCover_observed, na.rm=T),
+            nse   = 1  - sum((fCover_observed - fCover_predicted)^2,na.rm=T) / sum((fCover_observed - mean(fCover_observed,na.rm=T))^2,na.rm=T),
             n=n(),
             percent_na=mean(is.na(fCover_observed))) %>%
   ungroup() %>%
@@ -100,7 +100,7 @@ ecoregion_vegtype_error_figure = ggplot(ecoregion_vegtype_predictions, aes(x=fCo
   geom_smooth(method='lm', se=FALSE, aes(color='b'), size=1) +                                                  # specifying a color columns
   scale_color_manual(labels=c('1:1 Line','Correlation'), values=c('#D55E00','#0072B2')) + 
   #geom_abline(aes(slope=1, intercept = 0,color='#D55E00')) +
-  geom_label(data=ecoregion_vegtype_predictions_error_text, aes(x=0.01,y=0.88,label=label_text), size=2.5, hjust=0) + 
+  geom_label(data=ecoregion_vegtype_predictions_error_text, aes(x=0.01,y=0.9,label=label_text), size=2.5, hjust=0, parse=T) + 
   facet_wrap(~facet_label, ncol=2) +
   theme_bw(12) +
   theme(legend.position = c(0.75,0.1),
@@ -110,4 +110,4 @@ ecoregion_vegtype_error_figure = ggplot(ecoregion_vegtype_predictions, aes(x=fCo
         strip.text = element_text(hjust = 0, size=8)) +
   labs(x='Observed fCover', y='Predicted fCover') 
 
-ggsave('manuscript/figs/ecoregion_vegtype_errors.png',plot=ecoregion_vegtype_error_figure, height=20, width = 15, units='cm', dpi=150)
+ggsave('manuscript/figs/ecoregion_vegtype_errors.png',plot=ecoregion_vegtype_error_figure, height=20, width = 15, units='cm', dpi=200)

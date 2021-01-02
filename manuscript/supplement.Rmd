@@ -5,12 +5,132 @@ output: pdf_document
 ## Multi-scale assessment of a grassland productivity model
 **Shawn D. Taylor, Dawn M. Browning**
 
-Supplementary Table S1 & Image S1  
+Supplementary Equations, Table S1, S2 & Image S1  
+
+The PhenoGrass model from Hufkens et al. 2016 has the following form:
+
+\begin{equation}
+W_{t+1} = W_{t} + P_{t} - (1-V_{t})(D_{t}/(W_{cap}-{W_p}))^{2}E_{t}-gb_{3}D_{t}V_{t}
+\end{equation}
+
+\begin{equation}
+V_{t+1} = V_{t} + gS_{t}b_{1}D_{t-L}(1-V_{t}/V_{max})-db_{2}(1-V_{t})V_{t}
+\end{equation}
+
+\begin{equation}
+D_{t} = max(0,W_{t}-W_{p})
+\end{equation}
+
+\begin{equation}
+W_{t} = max(0,min(W_{cap},W_{t}))
+\end{equation}
+
+\begin{equation}
+V_{t} = max(0,min(V_{max},V_{t}))
+\end{equation}
+
+\begin{equation}
+\left\{\begin{matrix}
+D_{t-L} > D_{t-L-1}; & d=0\\ 
+D_{t-L} \leq  D_{t-L-1}; & d=1 
+\end{matrix}\right.
+\end{equation}
+
+\begin{equation}
+S_{t} = (TOA_{t} - Phmin)/(Phmax - Phmin)
+\end{equation}
+
+\begin{equation}
+\left\{\begin{matrix}
+S_{t-1} > S_{t}; & d=1  \\
+S_{t-1} \leq  S_{t}; & d=0 
+\end{matrix}\right.
+\end{equation}
+
+\begin{equation}
+g = (\frac{T_{max}-T_{m}}{T_{max}-T_{opt}})(\frac{T_{m}}{T_{opt}})^{(\frac{T_{opt}}{T_{max}-T_{opt}})}
+\end{equation}
+
+The vegetaion parameter V corresponds to the fCover, which is mapped to PhenoCam G\textsubscript{cc} using the transfer function based on the relationship between annual precipitation and fractional vegetation cover (Donohue et al. 2013).:
+
+\begin{equation}
+S_{c} = MAP/(MAP+h)
+\end{equation}
+
+where:
+\begin{equation}
+fCover = G_{cc}*S_{c}
+\end{equation}
+
+MAP is the site level mean annual precipitation, and \textit{h} is an estimated parameter. G\textsubscript{cc} is a ratio of the green band within the daily image ROI:
+
+\begin{equation}
+G_{cc} = \frac{G_{dn}}{G_{dn}+R_{dn}+B_{dn}}
+\end{equation}
+
+Where G\textsubscript{dn}, R\textsubscript{dn}, and B\textsubscript{dn} are the mean digitial numbers for green, red, and blue channels, respectively. See Richardson et al. 2018 for further G\textsubscript{cc} processing details. 
 
 \newpage
 
+\begin{table}[]
+\begin{tabular}{lll}
+                              & Parameter               & Description                                  \\
+\textbf{State Variables}      & W                       & Soil Water Content (mm)                      \\
+                             & V                       & Fractional Cover (fCover)                    \\
+                             & D                       & Plant available water (mm)                   \\
+                             & g                       & Plant temperature response function          \\
+\textbf{Input Variables}      & P                       & Precipitaiton (mm)                           \\
+                             & MAP                     & Mean annual precipitation (mm)                \\
+                             & W\textsubscript{cap}    & Soil Field Capacity (mm)                     \\
+                             & W\textsubscript{p}      & Soil Wilting Point (mm)                      \\
+                             & V\textsubscript{max}    & Maximum vegetation cover (1.0)               \\
+                             & E                       & Evapotranspiration (mm)                      \\
+                             & T\textsubscript{m}      & Running 15 day mean temperature (C)          \\
+                             & TOA                     & Top of atmosphere radiation                  \\
+                             & T\textsubscript{max}    & Maximum temperature for growth (45 C)        \\
+                             & T\textsubscript{min}    & Minimum temperature for growth (0 C)         \\
+\textbf{Estimated Parameters} & b1                      & Vegetation growth parameter                  \\
+                             & b2                      & Senescence parameter                         \\
+                             & b3                      & Soil water extraction rate                   \\
+                             & T\textsubscript{opt}    & Optimal vegetation growth temperature        \\
+                             & Phmin                   & Lower bound of optimal daily solar radiation \\
+                             & Phmax                   & Upper bound of optimal daily solar radiation \\
+                             & L                       & Lag (days)                                    \\
+                             & h                       & fCover Transfer function parameter                                           
+\end{tabular}
+\end{table}
+
+\newpage
+
+
+\begin{tabular}{l|r|r}
+\hline
+parameter & Great Plains Grasslands & E. Temperate Forests Grasslands\\
+\hline
+b1 & 0.0021756 & 0.0143214\\
+\hline
+b2 & 0.0607134 & 0.0269089\\
+\hline
+b3 & 0.2630305 & 9.8632117\\
+\hline
+Phmax & 48.1106340 & 49.6940973\\
+\hline
+Phmin & 25.5471298 & 33.1345876\\
+\hline
+Topt & 29.7376494 & 35.6335041\\
+\hline
+L & 3.0685254 & 3.1769617\\
+\hline
+h & 10.3601586 & 949.5914722\\
+\hline
+\end{tabular}
+Table S1. Final parameters for the two models which met the minimum NSE threshold. 
+
+
+\newpage
+
+Table S2. Sites used in analysis. A * indicates the site was also used in Hufkins et al. 2016.
 \begin{table}
-\caption{Sites used in analysis. A * indicates the site was also used in Hufkins et al. 2016.}
 \small
 \begin{tabular}{l|r|r|l|r|l|l|r|l}
 \hline
@@ -220,6 +340,16 @@ vaira* & 38.41 & -120.95 & GR & 1000 & 2011-10-17 & 2020-02-28 & 7.7 & MedCA\\
 \newpage
 \newpage
 
-```{r, out.width = "15cm", echo = FALSE, fig.cap = "Predicted (red) and observed (black) fCover values at five grassland sites in the North American Deserts ecoregion for the years 2015-2018. Blue bars represent precipitation in decimeters."}
+```{r, out.width = "15cm", echo = FALSE}
 knitr::include_graphics("figs/figS1_desert_grasslands.png")
 ```
+
+Figure S1. Predicted (red) and observed (black) fCover values at five grassland sites in the North American Deserts ecoregion for the years 2015-2018. Blue bars represent precipitation in decimeters.
+
+
+## References
+Richardson, Andrew D., Koen Hufkens, Tom Milliman, Donald M. Aubrecht, Min Chen, Josh M. Gray, Miriam R. Johnston, et al. 2018. “Tracking Vegetation Phenology across Diverse North American Biomes Using PhenoCam Imagery.” Scientific Data 5 (1): 180028. https://doi.org/10.1038/sdata.2018.28.  
+
+Donohue, Randall J., Michael L. Roderick, Tim R. McVicar, and Graham D. Farquhar. 2013. “Impact of CO 2 Fertilization on Maximum Foliage Cover across the Globe’s Warm, Arid Environments.” Geophysical Research Letters 40 (12): 3031–35. https://doi.org/10.1002/grl.50563.  
+
+Hufkens, Koen, Trevor F. Keenan, Lawrence B. Flanagan, Russell L. Scott, Carl J. Bernacchi, Eva Joo, Nathaniel A. Brunsell, Joseph Verfaillie, and Andrew D. Richardson. 2016. “Productivity of North American Grasslands Is Increased under Future Climate Scenarios despite Rising Aridity.” Nature Climate Change 6 (7): 710–14. https://doi.org/10.1038/nclimate2942.  

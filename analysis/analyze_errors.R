@@ -8,8 +8,8 @@ all_predictions = read_csv('data/full_model_predictions.csv',
 
 site_errors = all_predictions %>%
   group_by(fitting_set, model, timeseries_id) %>%
-  summarise(rmse = sqrt(mean( (fCover_observed - fCover_predicted)^2 ,na.rm=T)),
-            r2   = 1  - sum((fCover_observed - fCover_predicted)^2,na.rm=T) / sum((fCover_observed - mean(fCover_observed,na.rm=T))^2,na.rm=T),
+  summarise(cvmae = mean(abs(fCover_observed - fCover_predicted), na.rm=T)/mean(fCover_observed, na.rm=T) ,
+            nse   = 1  - sum((fCover_observed - fCover_predicted)^2,na.rm=T) / sum((fCover_observed - mean(fCover_observed,na.rm=T))^2,na.rm=T),
             n=n(),
             percent_na=mean(is.na(fCover_observed))) %>%
   ungroup() 
@@ -17,8 +17,8 @@ site_errors = all_predictions %>%
 primary_errors = site_errors %>%
   filter(model == 'PhenoGrass') %>% # just the phenograss model in the primary things. naive errors will be in supplement
   group_by(fitting_set, model) %>%
-  summarise(rmse = round(mean(rmse),2),
-            r2 =   round(mean(r2),2),
+  summarise(mean_cvmae = round(mean(cvmae),2),
+            nse =  round(mean(nse),2),
             n_timeseries = n_distinct(timeseries_id)) %>%
   ungroup()
 
