@@ -1,7 +1,6 @@
 This is the repository for the study:
 
-**Multi-scale assessment of a grassland productivity model**  
-Shawn Taylor & Dawn Browning
+Taylor, S.D. and Browning, D.M., 2021. Multi-scale assessment of a grassland productivity model. Biogeosciences, 18(6), pp.2213-2220. https://doi.org/10.5194/bg-18-2213-2021
 
 ## Contents
 
